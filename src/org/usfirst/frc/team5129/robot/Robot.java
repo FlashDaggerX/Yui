@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class Robot extends IterativeRobot {
 
-	private OI oi;
-
 	private RobotDrive drive;
 	private Joystick stick;
 	@SuppressWarnings("unused")
@@ -23,7 +21,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
-		oi = new OI();
+		OI oi = new OI();
 
 		drive = new RobotDrive(oi.motors[0], oi.motors[1], oi.motors[2],
 				oi.motors[3]);

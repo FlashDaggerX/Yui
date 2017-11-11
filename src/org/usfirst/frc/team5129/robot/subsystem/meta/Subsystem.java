@@ -9,9 +9,11 @@ package org.usfirst.frc.team5129.robot.subsystem.meta;
 public abstract class Subsystem {
 
 	private State state = State.STOPPED;
-
+	
+	public int functionCount = 0;
+	
 	/**
-	 * Starts the motor in the 'STOP' or 'STALL' state.
+	 * Starts the system in the 'STOP' or 'STALL' state.
 	 */
 	public void start() {
 		if (state == State.RUNNING)
@@ -20,7 +22,7 @@ public abstract class Subsystem {
 	}
 
 	/**
-	 * Stops the motor in the 'RUNNING' state.
+	 * Stops the system in the 'RUNNING' state.
 	 */
 	public void stop() {
 		if (state == State.STOPPED || state == State.STALLED)
@@ -29,7 +31,7 @@ public abstract class Subsystem {
 	}
 
 	/**
-	 * Stalls the motor in the 'RUNNING' state.
+	 * Stalls the system in the 'RUNNING' state.
 	 * 
 	 * Usually used to perform function mid-run.
 	 */

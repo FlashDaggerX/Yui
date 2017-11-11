@@ -2,9 +2,9 @@ package org.usfirst.frc.team5129.robot.subsystem.meta;
 
 public enum State {
 	
-	STALLED(0),
-	RUNNING(1),
-	STOPPED(2);
+	STOPPED(0),
+	STALLED(1),
+	RUNNING(2);
 	
 	private int id;
 	

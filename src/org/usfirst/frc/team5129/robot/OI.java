@@ -14,7 +14,7 @@ public class OI {
 	/**
 	 * Describes the four motor ports. They go in this order:
 	 * 
-	 * RearLeft, RearRight, FrontLeft, FrontRight
+	 * frontLeft, rearLeft, frontRight, rearRight
 	 */
 	public int[] motors = 
 		{
