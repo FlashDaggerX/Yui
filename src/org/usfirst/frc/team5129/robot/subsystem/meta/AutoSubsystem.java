@@ -30,24 +30,23 @@ public abstract class AutoSubsystem extends Subsystem {
 	 * 
 	 * @param l
 	 *            The length, in seconds, of the autonomous.
+	 * @param r
+	 *            The routine to run during autonomous.
 	 * @return Did scheduling the routine succeed?
 	 */
-	public boolean schedule(int l) {
+	public boolean schedule(int l, final Routine r) {
 		if (isRunning)
 			return isRunning;
 		this.length = l;
 		this.pass = 0;
+		r.doRoutine();
 		t.schedule(new TimerTask() {
-
 			@Override
 			public void run() {
-				complete(0);
 				pass++;
-
 				if (pass == length)
 					this.cancel();
 			}
-
 		}, 0, 1000);
 		isRunning = true;
 		return isRunning;
@@ -70,8 +69,13 @@ public abstract class AutoSubsystem extends Subsystem {
 	}
 
 	/**
-	 * Always called at '0' in auto.
+	 * 
+	 * @return The amount of the the routine has been running.
 	 */
+	public int getSeconds() {
+		return pass;
+	}
+
 	@Override
 	public abstract void complete(int i);
 

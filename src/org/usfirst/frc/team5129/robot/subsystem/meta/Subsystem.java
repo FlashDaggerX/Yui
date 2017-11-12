@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5129.robot.subsystem.meta;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * An implementation for an iterative subsystem.
  * 
@@ -41,6 +43,8 @@ public abstract class Subsystem {
 		state = State.STALLED;
 		if (done())
 			state = State.RUNNING;
+		else
+			DriverStation.reportError("STATE=STALLED:subsys_returned_false_loop", true);
 	}
 
 	/**
