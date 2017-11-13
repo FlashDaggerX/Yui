@@ -3,6 +3,8 @@ package org.usfirst.frc.team5129.robot.subsystem.meta;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * An autonomous implementation of a subsystem.
  * 
@@ -14,7 +16,6 @@ public abstract class AutoSubsystem extends Subsystem {
 	private Timer t;
 
 	private int pass; // Time passed in the instruction.
-	private int length; // Length of the autonomous instruction.
 
 	private boolean isRunning; // Is the routine running?
 
@@ -25,27 +26,26 @@ public abstract class AutoSubsystem extends Subsystem {
 	}
 
 	/**
-	 * Schedules an autonomous function to run. Calls 'complete(0)'. Cancels if
-	 * already running.
+	 * Schedules an autonomous function to run. Cancels if already running.
 	 * 
-	 * @param l
-	 *            The length, in seconds, of the autonomous.
 	 * @param r
 	 *            The routine to run during autonomous.
+	 * @param report
+	 *            Report autonomous scheduling to the DS?
 	 * @return Did scheduling the routine succeed?
 	 */
-	public boolean schedule(int l, final Routine r) {
+	public boolean schedule(final Routine r, final boolean report) {
 		if (isRunning)
 			return isRunning;
-		this.length = l;
 		this.pass = 0;
-		r.doRoutine();
 		t.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				r.doRoutine();
 				pass++;
-				if (pass == length)
-					this.cancel();
+				if (report)
+					DriverStation.reportWarning(
+							("counting_auto_routine:" + pass), false);
 			}
 		}, 0, 1000);
 		isRunning = true;

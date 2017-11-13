@@ -51,13 +51,16 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		switch (choice.getTable().getInt("autonomous_routine")) {
 			case 0:
-				auto[0].schedule(5, new Routine() {
+				auto[0].start();
+				auto[0].schedule(new Routine() {
 					@Override
 					public void doRoutine() {
-						auto[0].complete(4);
-						auto[0].complete(2);
+						if (auto[0].getSeconds() == 0)
+							auto[0].complete(2);
+						if (auto[0].getSeconds() == 5)
+							auto[0].breakRoutine();
 					}
-				});
+				}, true);
 				break;
 		}
 	}
@@ -65,6 +68,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		updateDash();
+	}
+	
+	@Override
+	public void teleopInit() {
+		for (Subsystem s : subs) {
+			s.start();
+		}
 	}
 
 	@Override
@@ -78,6 +88,16 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		updateMotor();
 		updateDash();
+	}
+	
+	@Override
+	public void disabledInit() {
+		for (Subsystem s : subs) {
+			s.stop();
+		}
+		for (AutoSubsystem s : auto) {
+			s.stop();
+		}
 	}
 
 	private void updateMotor() {
