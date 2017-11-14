@@ -1,7 +1,7 @@
-package org.usfirst.frc.team5129.robot.subsystem;
+package org.usfirst.frc.team5129.subsystem;
 
-import org.usfirst.frc.team5129.robot.subsystem.meta.AutoSubsystem;
-import org.usfirst.frc.team5129.robot.subsystem.meta.State;
+import org.usfirst.frc.team5129.subsystem.meta.AutoSubsystem;
+import org.usfirst.frc.team5129.subsystem.meta.State;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;

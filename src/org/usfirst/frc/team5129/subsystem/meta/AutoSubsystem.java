@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5129.robot.subsystem.meta;
+package org.usfirst.frc.team5129.subsystem.meta;
 
 import java.util.Timer;
 import java.util.TimerTask;
