@@ -17,40 +17,71 @@ public class Camera extends Subsystem {
 
 	private Thread vision;
 
+	private volatile CvSource outputStream;
+
 	public Camera() {
 		super();
 	}
 
+	/*
+	 * Functions:
+	 * 
+	 * [0 - Start Server] [1 - Join Thread]
+	 */
 	@Override
 	public void complete(int i) {
 		if (getMotorState() == State.RUNNING) {
-			// This is a code example from WPI's Java examples.
-			vision = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					UsbCamera camera = CameraServer.getInstance()
-							.startAutomaticCapture();
-					camera.setResolution(640, 480);
-					CvSink cvSink = CameraServer.getInstance().getVideo();
-					CvSource outputStream = CameraServer.getInstance()
-							.putVideo("vision_def", 640, 480);
-
-					Mat mat = new Mat();
-					while (!Thread.interrupted()) {
-						if (cvSink.grabFrame(mat) == 0) {
-							outputStream.notifyError(cvSink.getError());
-							continue;
-						}
-						Imgproc.rectangle(mat, new Point(100, 100), new Point(
-								400, 400), new Scalar(255, 255, 255), 5);
-						outputStream.putFrame(mat);
+			switch (i) {
+				case 0:
+					if (vision == null) {
+						// This is a code example from WPI's Java examples.
+						vision = new Thread(new Runnable() {
+							@Override
+							public void run() {
+								UsbCamera camera = CameraServer.getInstance()
+										.startAutomaticCapture();
+								camera.setResolution(640, 480);
+								CvSink cvSink = CameraServer.getInstance()
+										.getVideo();
+								setOutputStream(CameraServer.getInstance()
+										.putVideo("vision_def", 640, 480));
+								Mat mat = new Mat();
+								while (!Thread.interrupted()) {
+									if (cvSink.grabFrame(mat) == 0) {
+										getOutputStream().notifyError(
+												cvSink.getError());
+										continue;
+									}
+									Imgproc.rectangle(mat, new Point(100, 100),
+											new Point(400, 400), new Scalar(
+													255, 255, 255), 5);
+									getOutputStream().putFrame(mat);
+								}
+							}
+						});
+						vision.setDaemon(true);
+						vision.start();
+					} else {
+						DriverStation.reportError(
+								"STATE=STARTED:vision_subsys_already_created",
+								false);
 					}
-				}
-			});
-			vision.setDaemon(true);
-			vision.start();
+					break;
+				case 1:
+					if (vision.isAlive()) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							DriverStation.reportError(
+									"STATE=STALLED:vision_subsys_passed_sleep",
+									true);
+						}
+					}
+					break;
+			}
 		} else {
 			if (vision.isAlive()) {
+				getOutputStream().free();
 				try {
 					vision.join();
 				} catch (InterruptedException e) {
@@ -59,20 +90,14 @@ public class Camera extends Subsystem {
 							true);
 				}
 			}
+			vision = null;
+			DriverStation.reportWarning(
+					"STATE=STOPPED_?_STALLED:vision_subsys_thread_died", false);
 		}
 	}
 
 	@Override
 	public boolean done() {
-		if (vision.isAlive()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				DriverStation.reportError(
-						"STATE=STALLED:vision_subsys_passed_sleep", true);
-				return false;
-			}
-		}
 		return true;
 	}
 
@@ -84,6 +109,14 @@ public class Camera extends Subsystem {
 	@Override
 	public String getDescription() {
 		return "Gets images from a USB Camera server and send them to the Dashboard.";
+	}
+
+	public synchronized CvSource getOutputStream() {
+		return outputStream;
+	}
+
+	public synchronized void setOutputStream(CvSource source) {
+		this.outputStream = source;
 	}
 
 }
