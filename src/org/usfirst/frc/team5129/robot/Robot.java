@@ -1,9 +1,9 @@
 package org.usfirst.frc.team5129.robot;
 
-import org.usfirst.frc.team5129.robot.subsystem.Drive;
-import org.usfirst.frc.team5129.robot.subsystem.meta.AutoSubsystem;
-import org.usfirst.frc.team5129.robot.subsystem.meta.Routine;
-import org.usfirst.frc.team5129.robot.subsystem.meta.Subsystem;
+import org.usfirst.frc.team5129.subsystem.Drive;
+import org.usfirst.frc.team5129.subsystem.meta.AutoSubsystem;
+import org.usfirst.frc.team5129.subsystem.meta.Routine;
+import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -66,30 +66,12 @@ public class Robot extends IterativeRobot {
 	}
 
 	@Override
-	public void autonomousPeriodic() {
-		updateDash();
-	}
-	
-	@Override
 	public void teleopInit() {
 		for (Subsystem s : subs) {
 			s.start();
 		}
 	}
 
-	@Override
-	public void teleopPeriodic() {
-		updateMotor();
-		updateDash();
-		subs[0].complete(0);
-	}
-
-	@Override
-	public void testPeriodic() {
-		updateMotor();
-		updateDash();
-	}
-	
 	@Override
 	public void disabledInit() {
 		for (Subsystem s : subs) {
@@ -98,13 +80,5 @@ public class Robot extends IterativeRobot {
 		for (AutoSubsystem s : auto) {
 			s.stop();
 		}
-	}
-
-	private void updateMotor() {
-		// Placeholder
-	}
-
-	private void updateDash() {
-		// Placeholder
 	}
 }
