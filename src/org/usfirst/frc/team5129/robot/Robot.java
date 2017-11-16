@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5129.robot;
 
+import org.usfirst.frc.team5129.subsystem.Camera;
 import org.usfirst.frc.team5129.subsystem.Drive;
 import org.usfirst.frc.team5129.subsystem.meta.AutoSubsystem;
 import org.usfirst.frc.team5129.subsystem.meta.Routine;
@@ -41,6 +42,7 @@ public class Robot extends IterativeRobot {
 
 		subs = new Subsystem[1];
 		subs[0] = new Drive(drive, controller);
+		subs[1] = new Camera();
 
 		auto = new AutoSubsystem[1];
 		subs[0] = new Drive(drive);
@@ -49,6 +51,8 @@ public class Robot extends IterativeRobot {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void autonomousInit() {
+		subs[1].start();
+		subs[1].complete(0);
 		switch (choice.getTable().getInt("autonomous_routine")) {
 			case 0:
 				auto[0].start();
@@ -70,6 +74,8 @@ public class Robot extends IterativeRobot {
 		for (Subsystem s : subs) {
 			s.start();
 		}
+		subs[0].complete(0);
+		subs[1].complete(0);
 	}
 
 	@Override
