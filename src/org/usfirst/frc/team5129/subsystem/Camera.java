@@ -4,6 +4,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.usfirst.frc.team5129.subsystem.meta.Routine;
 import org.usfirst.frc.team5129.subsystem.meta.State;
 import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
@@ -29,7 +30,7 @@ public class Camera extends Subsystem {
 	 * [0 - Start Server] [1 - Join Thread]
 	 */
 	@Override
-	public void complete(int i) {
+	public void complete(int i, final Routine r) {
 		if (getMotorState() == State.RUNNING) {
 			switch (i) {
 				case 0:
@@ -97,6 +98,11 @@ public class Camera extends Subsystem {
 	}
 
 	@Override
+	public void onTick() {
+
+	}
+
+	@Override
 	public boolean done() {
 		return true;
 	}
@@ -108,14 +114,14 @@ public class Camera extends Subsystem {
 
 	@Override
 	public String getDescription() {
-		return "Gets images from a USB Camera server and send them to the Dashboard.";
+		return "Gets images from a USB Camera server and sends them to the Dashboard.";
 	}
 
-	public synchronized CvSource getOutputStream() {
+	private synchronized CvSource getOutputStream() {
 		return outputStream;
 	}
 
-	public synchronized void setOutputStream(CvSource source) {
+	private synchronized void setOutputStream(CvSource source) {
 		this.outputStream = source;
 	}
 

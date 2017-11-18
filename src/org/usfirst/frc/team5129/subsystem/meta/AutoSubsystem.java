@@ -1,10 +1,5 @@
 package org.usfirst.frc.team5129.subsystem.meta;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import edu.wpi.first.wpilibj.DriverStation;
-
 /**
  * An autonomous implementation of a subsystem.
  * 
@@ -13,71 +8,54 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public abstract class AutoSubsystem extends Subsystem {
 
-	private Timer t;
-
-	private int pass; // Time passed in the instruction.
-
-	private boolean isRunning; // Is the routine running?
+	private volatile double power; // Motor power of the autonomous system
+	private volatile double curve; // Motor curve
 
 	public AutoSubsystem() {
 		super();
-		t = new Timer();
-		isRunning = false;
 	}
 
 	/**
-	 * Schedules an autonomous function to run. Cancels if already running.
+	 * Sets the motor power during routines.
 	 * 
-	 * @param r
-	 *            The routine to run during autonomous.
-	 * @param report
-	 *            Report autonomous scheduling to the DS?
-	 * @return Did scheduling the routine succeed?
+	 * @param power
+	 *            The power of the motor (Between -1 and 1)
 	 */
-	public boolean schedule(final Routine r, final boolean report) {
-		if (isRunning)
-			return isRunning;
-		this.pass = 0;
-		t.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				r.doRoutine();
-				pass++;
-				if (report)
-					DriverStation.reportWarning(
-							("counting_auto_routine:" + pass), false);
-			}
-		}, 0, 1000);
-		isRunning = true;
-		return isRunning;
+	public synchronized void setPower(double power) {
+		this.power = power;
 	}
 
 	/**
-	 * Cancels the autonomous routine.
+	 * Sets the motor's curve.
+	 * 
+	 * @param curve
+	 *            The curve (Between -1 and 1)
 	 */
-	public void breakRoutine() {
-		t.cancel();
-		isRunning = false;
+	public synchronized void setCurve(double curve) {
+		this.curve = curve;
 	}
 
 	/**
 	 * 
-	 * @return Is the autonomous routine running?
+	 * @return The motor power.
 	 */
-	public boolean isRunning() {
-		return isRunning;
+	public synchronized double getPower() {
+		return power;
 	}
-
+	
 	/**
 	 * 
-	 * @return The amount of the the routine has been running.
+	 * @return The motor curve.
 	 */
-	public int getSeconds() {
-		return pass;
+	public synchronized double getCurve() {
+		return curve;
 	}
 
 	@Override
-	public abstract void complete(int i);
+	public abstract void complete(int i, final Routine r);
+
+	@Override
+	public abstract void onTick();
 
 	@Override
 	public abstract boolean done();

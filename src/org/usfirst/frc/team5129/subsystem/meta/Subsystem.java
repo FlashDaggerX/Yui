@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 public abstract class Subsystem {
 
 	private State state = State.STOPPED;
-	
-	public int functionCount = 0;
-	
+
+	private volatile int tick; // Seconds. Increased in 'periodic()' methods
+
 	/**
 	 * Starts the system in the 'STOP' or 'STALL' state.
 	 */
@@ -44,7 +44,35 @@ public abstract class Subsystem {
 		if (done())
 			state = State.RUNNING;
 		else
-			DriverStation.reportError("STATE=STALLED:subsys_returned_false_loop", true);
+			DriverStation.reportError(
+					"STATE=STALLED:subsys_returned_false_loop", true);
+	}
+
+	/**
+	 * Increments the subsystem time. Only ticks if the subsystem's state is
+	 * 'RUNNING'
+	 */
+	public synchronized void tick() {
+		if (state == State.RUNNING) {
+			tick++;
+			onTick();
+		}
+	}
+
+	/**
+	 * Resets the tick count to 0.
+	 */
+	public synchronized void resetTicks() {
+		tick = 0;
+	}
+
+	/**
+	 * 
+	 * @return The ticks gone by (Increments every 20ms, which equals one
+	 *         second)
+	 */
+	public synchronized int getTicks() {
+		return tick;
 	}
 
 	/**
@@ -59,10 +87,18 @@ public abstract class Subsystem {
 	 * Runs a number of functions when required.
 	 * 
 	 * @param i
-	 *            The function. Stored usually in a nested if-else statement in
+	 *            The function. Stored usually in a switch statement in
 	 *            'complete()'
+	 * @param r
+	 *            The routine to run when a custom instruction is called.
+	 *            Specified by 'i'. This can be left null otherwise.
 	 */
-	public abstract void complete(int i);
+	public abstract void complete(int i, final Routine r);
+
+	/**
+	 * Called when the subsystem is ticked.
+	 */
+	public abstract void onTick();
 
 	/**
 	 * Called when the state is changed to 'STALLED'

@@ -24,6 +24,7 @@ public class Robot extends IterativeRobot {
 
 	private Subsystem[] subs;
 	private AutoSubsystem[] auto;
+	private Routine routine;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -45,37 +46,59 @@ public class Robot extends IterativeRobot {
 		subs[1] = new Camera();
 
 		auto = new AutoSubsystem[1];
-		subs[0] = new Drive(drive);
+		auto[0] = new Drive(drive, null);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void autonomousInit() {
 		subs[1].start();
-		subs[1].complete(0);
+		subs[1].complete(0, null);
 		switch (choice.getTable().getInt("autonomous_routine")) {
 			case 0:
 				auto[0].start();
-				auto[0].schedule(new Routine() {
+				routine = new Routine() {
 					@Override
 					public void doRoutine() {
-						if (auto[0].getSeconds() == 0)
-							auto[0].complete(2);
-						if (auto[0].getSeconds() == 5)
-							auto[0].breakRoutine();
+						if (auto[0].getTicks() == 0) {
+							auto[0].setPower(1);
+							auto[0].setCurve(0);
+							auto[0].complete(3, null);
+						}
 					}
-				}, true);
+				};
+				break;
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void autonomousPeriodic() {
+		for (AutoSubsystem s : auto) {
+			s.tick();
+		}
+		switch (choice.getTable().getInt("autonomous_routine")) {
+			case 0:
+				auto[0].complete(2, routine);
 				break;
 		}
 	}
 
 	@Override
 	public void teleopInit() {
+		for (AutoSubsystem s : auto) {
+			s.stop();
+		}
 		for (Subsystem s : subs) {
 			s.start();
 		}
-		subs[0].complete(0);
-		subs[1].complete(0);
+	}
+
+	@Override
+	public void teleopPeriodic() {
+		for (Subsystem s : subs) {
+			s.tick();
+		}
 	}
 
 	@Override
