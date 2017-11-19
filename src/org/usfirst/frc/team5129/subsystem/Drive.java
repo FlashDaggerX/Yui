@@ -58,8 +58,6 @@ public class Drive extends AutoSubsystem {
 						drive.drive(getPower(), getCurve());
 					break;
 			}
-		} else {
-			drive.stopMotor();
 		}
 	}
 
@@ -84,8 +82,13 @@ public class Drive extends AutoSubsystem {
 	}
 
 	@Override
-	public boolean done() {
+	public boolean onStall() {
 		return true;
+	}
+	
+	@Override
+	public void onStop() {
+		drive.stopMotor();
 	}
 
 	@Override

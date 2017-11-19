@@ -58,7 +58,10 @@ public abstract class AutoSubsystem extends Subsystem {
 	public abstract void onTick();
 
 	@Override
-	public abstract boolean done();
+	public abstract boolean onStall();
+	
+	@Override
+	public abstract void onStop();
 
 	@Override
 	public abstract String getName();

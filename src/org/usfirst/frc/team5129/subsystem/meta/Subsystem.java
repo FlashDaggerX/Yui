@@ -30,6 +30,7 @@ public abstract class Subsystem {
 		if (state == State.STOPPED || state == State.STALLED)
 			return;
 		state = State.STOPPED;
+		onStop();
 	}
 
 	/**
@@ -41,7 +42,7 @@ public abstract class Subsystem {
 		if (state == State.STOPPED || state == State.STALLED)
 			return;
 		state = State.STALLED;
-		if (done())
+		if (onStall())
 			state = State.RUNNING;
 		else
 			DriverStation.reportError(
@@ -105,7 +106,14 @@ public abstract class Subsystem {
 	 * 
 	 * @return Did the operation complete?
 	 */
-	public abstract boolean done();
+	public abstract boolean onStall();
+
+	/**
+	 * Called when the state is changed to 'STOPPED'
+	 * 
+	 * @return Did the operation complete?
+	 */
+	public abstract void onStop();
 
 	/**
 	 * 

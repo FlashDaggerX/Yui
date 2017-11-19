@@ -80,20 +80,6 @@ public class Camera extends Subsystem {
 					}
 					break;
 			}
-		} else {
-			if (vision.isAlive()) {
-				getOutputStream().free();
-				try {
-					vision.join();
-				} catch (InterruptedException e) {
-					DriverStation.reportError(
-							"STATE=STOPPED:vision_subsys_cannot_join_main",
-							true);
-				}
-			}
-			vision = null;
-			DriverStation.reportWarning(
-					"STATE=STOPPED_?_STALLED:vision_subsys_thread_died", false);
 		}
 	}
 
@@ -103,8 +89,25 @@ public class Camera extends Subsystem {
 	}
 
 	@Override
-	public boolean done() {
+	public boolean onStall() {
 		return true;
+	}
+	
+	@Override
+	public void onStop() {
+		if (vision.isAlive()) {
+			getOutputStream().free();
+			try {
+				vision.join();
+			} catch (InterruptedException e) {
+				DriverStation.reportError(
+						"STATE=STOPPED:vision_subsys_cannot_join_main",
+						true);
+			}
+		}
+		vision = null;
+		DriverStation.reportWarning(
+				"STATE=STOPPED_?_STALLED:vision_subsys_thread_died", false);
 	}
 
 	@Override
