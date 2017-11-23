@@ -51,9 +51,13 @@ public class Drive extends AutoSubsystem {
 					decideDrive();
 					break;
 				case 1:
-					r.doRoutine();
+					decideDrive();
+					change();
 					break;
 				case 2:
+					r.doRoutine();
+					break;
+				case 3:
 					if (type == DriveType.AUTO)
 						drive.drive(getPower(), getCurve());
 					break;
@@ -89,6 +93,17 @@ public class Drive extends AutoSubsystem {
 	@Override
 	public void onStop() {
 		drive.stopMotor();
+	}
+	
+	@Override
+	public void onKill() {
+		stop();
+	}
+	
+	private void change() {
+		if (control.getRawButton(buttonID)) {
+			kill();
+		}
 	}
 
 	@Override

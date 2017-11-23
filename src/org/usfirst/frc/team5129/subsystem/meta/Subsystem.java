@@ -1,5 +1,8 @@
 package org.usfirst.frc.team5129.subsystem.meta;
 
+
+import org.usfirst.frc.team5129.safety.ControlSafety;
+
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
@@ -8,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  * @author kyleg
  * 
  */
-public abstract class Subsystem {
+public abstract class Subsystem extends ControlSafety {
 
 	private State state = State.STOPPED;
 
@@ -94,7 +97,7 @@ public abstract class Subsystem {
 	 *            The routine to run when a custom instruction is called.
 	 *            Specified by 'i'. This can be left null otherwise.
 	 */
-	public abstract void complete(int i, final Routine r);
+	public abstract void complete(int i, Routine r);
 
 	/**
 	 * Called when the subsystem is ticked.
@@ -126,4 +129,7 @@ public abstract class Subsystem {
 	 * @return The subsystem description
 	 */
 	public abstract String getDescription();
+	
+	@Override
+	public abstract void onKill();
 }

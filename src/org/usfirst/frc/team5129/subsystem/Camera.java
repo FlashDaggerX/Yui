@@ -109,6 +109,11 @@ public class Camera extends Subsystem {
 		DriverStation.reportWarning(
 				"STATE=STOPPED_?_STALLED:vision_subsys_thread_died", false);
 	}
+	
+	@Override
+	public void onKill() {
+		stop();
+	}
 
 	@Override
 	public String getName() {
