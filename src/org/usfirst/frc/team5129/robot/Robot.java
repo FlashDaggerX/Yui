@@ -76,10 +76,12 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousPeriodic() {
+		int choose = Integer.parseInt(choice.getTable().getString(
+				"autonomous_routine", "0"));
 		for (AutoSubsystem s : auto) {
 			s.tick();
 		}
-		switch (0) {
+		switch (choose) {
 			case 0:
 				auto[0].complete(3, routine);
 				break;
