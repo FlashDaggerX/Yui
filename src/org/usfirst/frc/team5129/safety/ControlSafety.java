@@ -1,50 +1,70 @@
 package org.usfirst.frc.team5129.safety;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
- * Used in Test Mode, when killing the robot is typically
- * needed.
- * 
- * <p> You could also consider it a first layer before the
- * stop command.
+ * Implements safety features in a subsystem.
+ * <p>
+ * You could also consider it a first layer before the stop command.
  * 
  * @author kyleg
- *
  */
 public abstract class ControlSafety {
-	
-	private SafeState type = SafeState.OK;
-	
-	public byte buttonID; // The ID of the kill button.
-	
-	/**
-	 * Starts or Resumes motor progress.
-	 */
-	public void resume() {
-		type = SafeState.OK;
-	}
+
+	private MotorState state = MotorState.STOPPED;
+
+	public byte killID; // The ID of the kill button.
 	
 	/**
-	 * Kill the motor entirely, regardless of the task.
-	 */
-	public void kill() {
-		type = SafeState.EMERGENCY;
-		onKill();
-	}
-	
-	public void setKillButton(byte id) {
-		this.buttonID = id;
-	}
-	
-	/**
-	 * Called when the motor is killed.
-	 */
-	public abstract void onKill();
-	
-	/**
+	 * Called when the state is changed to 'STALLED'
 	 * 
-	 * @return The state of the motor safety feature.
+	 * @return Did the operation complete?
 	 */
-	public SafeState getSafetyState() {
-		return type;
+	public abstract boolean onStall();
+
+	/**
+	 * Called when the state is changed to 'STOPPED'
+	 * 
+	 * @return Did the operation complete?
+	 */
+	public abstract void onStop();
+	
+	/**
+	 * Starts the system in the 'STOP' or 'STALL' state.
+	 */
+	public void start() {
+		if (state == MotorState.RUNNING)
+			return;
+		state = MotorState.RUNNING;
 	}
+
+	/**
+	 * Stops the system in the 'RUNNING' state.
+	 */
+	public void stop() {
+		if (state == MotorState.STOPPED || state == MotorState.STALLED)
+			return;
+		state = MotorState.STOPPED;
+		onStop();
+	}
+
+	/**
+	 * Stalls the system in the 'RUNNING' state. Usually used to perform
+	 * function mid-run.
+	 */
+	public void stall() {
+		if (state == MotorState.STOPPED || state == MotorState.STALLED)
+			return;
+		state = MotorState.STALLED;
+		if (onStall())
+			state = MotorState.RUNNING;
+		else
+			DriverStation.reportError(
+					"STATE=STALLED:subsys_returned_false_loop", true);
+	}
+
+	public void setKillButton(byte id) {
+		this.killID = id;
+	}
+
 }

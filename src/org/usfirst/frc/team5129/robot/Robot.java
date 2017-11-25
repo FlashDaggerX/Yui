@@ -3,7 +3,6 @@ package org.usfirst.frc.team5129.robot;
 import org.usfirst.frc.team5129.subsystem.Camera;
 import org.usfirst.frc.team5129.subsystem.Drive;
 import org.usfirst.frc.team5129.subsystem.Lift;
-import org.usfirst.frc.team5129.subsystem.meta.AutoSubsystem;
 import org.usfirst.frc.team5129.subsystem.meta.Routine;
 import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
@@ -27,8 +26,6 @@ public class Robot extends IterativeRobot {
 	private Spark lift;
 
 	private Subsystem[] subs;
-	private AutoSubsystem[] auto;
-	private Routine routine;
 
 	@Override
 	public void robotInit() {
@@ -40,60 +37,54 @@ public class Robot extends IterativeRobot {
 
 		drive = new RobotDrive(oi.motors[0], oi.motors[1], oi.motors[2],
 				oi.motors[3]);
+		
 		stick = new Joystick(oi.controllers[0]);
+		
 		controller = new XboxController(oi.controllers[1]);
-
+		
 		lift = new Spark(oi.components[0]);
 
-		subs = new Subsystem[] { new Drive(drive, controller), new Camera(),
-				new Lift(lift) };
+		subs = new Subsystem[] { new Drive(drive, controller), new Lift(lift),
+				new Camera() };
 
-		auto = new AutoSubsystem[] { new Drive(drive, null) };
 	}
 
 	@Override
 	public void autonomousInit() {
+		for (Subsystem s : subs) {
+			s.start();
+		}
+
 		int choose = Integer.parseInt(choice.getTable().getString(
-				"autonomous_routine", "0"));
-		subs[1].start();
-		subs[1].complete(0, null);
+				"autonomous_routine",
+				"0"));
+
 		switch (choose) {
 			case 0:
-				auto[0].start();
-				routine = new Routine() {
+				subs[0].setRoutine(new Routine() {
+					
 					@Override
 					public void doRoutine() {
-						if (auto[0].getTicks() == 0) {
-							auto[0].setPower(1);
-							auto[0].setCurve(0);
-							auto[0].complete(3, null);
+						if (subs[0].getTicks() == 0) {
+							subs[0].complete((byte) 2);
 						}
 					}
-				};
+				});
+				subs[0].complete((byte) 5);
 				break;
 		}
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		int choose = Integer.parseInt(choice.getTable().getString(
-				"autonomous_routine", "0"));
-		for (AutoSubsystem s : auto) {
-			s.tick();
-		}
-		switch (choose) {
-			case 0:
-				auto[0].complete(3, routine);
-				break;
-		}
+		subs[0].tick();
 	}
 
 	@Override
 	public void teleopInit() {
-		for (AutoSubsystem s : auto) {
-			s.stop();
-		}
+		subs[0].complete((byte) 6);
 		for (Subsystem s : subs) {
+			s.resetTicks();
 			s.start();
 		}
 	}
@@ -102,18 +93,17 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		for (Subsystem s : subs) {
 			s.tick();
+
 			if (!s.getName().equalsIgnoreCase("CameraServer"))
-				s.complete(0, null);
+				s.complete((byte) 0);
 		}
 	}
 
 	@Override
 	public void disabledInit() {
 		for (Subsystem s : subs) {
-			s.kill();
-		}
-		for (AutoSubsystem s : auto) {
-			s.kill();
+			s.resetTicks();
+			s.stop();
 		}
 	}
 }

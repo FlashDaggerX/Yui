@@ -1,73 +1,80 @@
 package org.usfirst.frc.team5129.subsystem;
 
-import org.usfirst.frc.team5129.subsystem.meta.AutoSubsystem;
-import org.usfirst.frc.team5129.subsystem.meta.Routine;
-import org.usfirst.frc.team5129.subsystem.meta.State;
+import org.usfirst.frc.team5129.safety.MotorState;
+import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.XboxController;
 
-public class Drive extends AutoSubsystem {
+public class Drive extends Subsystem {
 
 	private enum DriveType {
-		AUTO, CONTROLLER, JOYSTICK;
+		CONTROLLER, JOYSTICK;
 	}
 
-	private DriveType type = DriveType.AUTO;
+	private DriveType type = DriveType.JOYSTICK;
 
 	private RobotDrive drive;
 	private GenericHID control;
 
+	private boolean isAuto;
+
 	public Drive(RobotDrive drive, GenericHID control) {
-		this.drive = drive;
+		super();
 
 		if (control instanceof Joystick)
 			type = DriveType.JOYSTICK;
 		else if (control instanceof XboxController)
 			type = DriveType.CONTROLLER;
-
-		if (control == null)
-			type = DriveType.AUTO;
-
+		
+		this.drive = drive;
 		this.control = control;
+		this.isAuto = false;
 	}
-	
+
 	/*
 	 * Functions:
 	 * 
-	 * [0 - Manual] [1 - Routine]
-	 * [2 - Forward] [3 - Back]
-	 * [4 - Right] [5 - Left]
+	 * [0 - Manual] [1 - Forward] [2 - Back] [3 - Left] [4 - Right]   
+	 * [5 - Swap Auto] [6 - Swap Manual]
 	 */
 	@Override
-	public void complete(int i, Routine r) {
-		if (getMotorState() == State.RUNNING) {
+	public void complete(byte i) {
+		if (getMotorState() == MotorState.RUNNING) {
 			switch (i) {
 				case 0:
 					decideDrive();
 					break;
 				case 1:
-					decideDrive();
-					change();
+					drive.drive(1, 0);
 					break;
 				case 2:
-					r.doRoutine();
+					drive.drive(-1, 0);
 					break;
 				case 3:
-					if (type == DriveType.AUTO)
-						drive.drive(getPower(), getCurve());
+					drive.drive(0, -1);
 					break;
+				case 4:
+					drive.drive(0, 1);
+					break;
+				case 5:
+					isAuto = true;
+					break;
+				case 6:
+					isAuto = false;
 			}
 		}
 	}
 
 	@Override
 	public void onTick() {
-
+		if (isAuto)
+			getRoutine().doRoutine();
 	}
 
 	private void decideDrive() {
@@ -78,32 +85,23 @@ public class Drive extends AutoSubsystem {
 			case CONTROLLER:
 				drive.drive(control.getY(Hand.kLeft), control.getX(Hand.kRight));
 				break;
-			default:
-				DriverStation.reportError(
-						"STATE=RUNNING:drive_subsys_drivetype_unknown", false);
-				break;
 		}
 	}
 
 	@Override
 	public boolean onStall() {
+		drive.setInvertedMotor(MotorType.kFrontLeft, true);
+		drive.setInvertedMotor(MotorType.kFrontRight, true);
+		drive.setInvertedMotor(MotorType.kRearLeft, true);
+		drive.setInvertedMotor(MotorType.kRearRight, true);
+		DriverStation.reportWarning("STATE=STALLED:drive_subsys_inverted",
+				false);
 		return true;
 	}
-	
+
 	@Override
 	public void onStop() {
 		drive.stopMotor();
-	}
-	
-	@Override
-	public void onKill() {
-		stop();
-	}
-	
-	private void change() {
-		if (control.getRawButton(buttonID)) {
-			kill();
-		}
 	}
 
 	@Override

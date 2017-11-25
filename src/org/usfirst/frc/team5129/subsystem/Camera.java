@@ -4,8 +4,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5129.subsystem.meta.Routine;
-import org.usfirst.frc.team5129.subsystem.meta.State;
+import org.usfirst.frc.team5129.safety.MotorState;
 import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
 import edu.wpi.cscore.CvSink;
@@ -30,8 +29,8 @@ public class Camera extends Subsystem {
 	 * [0 - Start Server] [1 - Join Thread]
 	 */
 	@Override
-	public void complete(int i, final Routine r) {
-		if (getMotorState() == State.RUNNING) {
+	public void complete(byte i) {
+		if (getMotorState() == MotorState.RUNNING) {
 			switch (i) {
 				case 0:
 					if (vision == null) {
@@ -110,11 +109,6 @@ public class Camera extends Subsystem {
 				"STATE=STOPPED_?_STALLED:vision_subsys_thread_died", false);
 	}
 	
-	@Override
-	public void onKill() {
-		stop();
-	}
-
 	@Override
 	public String getName() {
 		return "CameraServer";

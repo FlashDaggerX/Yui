@@ -32,6 +32,16 @@ public class OI {
 	public int[] controllers = 
 		{
 			7,
+			8
+		};
+	
+	/**
+	 * Describes other components. They go in this order:
+	 * 
+	 * Lift (SPARK Controller)
+	 */
+	public int[] components =
+		{
 			9
 		};
 }
