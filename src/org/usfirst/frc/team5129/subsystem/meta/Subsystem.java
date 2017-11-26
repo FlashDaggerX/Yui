@@ -14,7 +14,7 @@ public abstract class Subsystem extends ControlSafety {
 
 	private Routine routine; // The specified routine, if there's one.
 
-	private volatile int tick; // Seconds. Increased in 'periodic()' methods
+	private int tick; // Seconds. Increased in 'periodic()' methods
 
 	/**
 	 * Runs a number of functions when required.
@@ -53,7 +53,7 @@ public abstract class Subsystem extends ControlSafety {
 	 * <p>
 	 * Only ticks if the subsystem's state is 'RUNNING'
 	 */
-	public synchronized void tick() {
+	public void tick() {
 		if (state == MotorState.RUNNING) {
 			tick++;
 			onTick();
@@ -63,7 +63,7 @@ public abstract class Subsystem extends ControlSafety {
 	/**
 	 * Resets the tick count to 0.
 	 */
-	public synchronized void resetTicks() {
+	public void resetTicks() {
 		tick = 0;
 	}
 
@@ -71,7 +71,7 @@ public abstract class Subsystem extends ControlSafety {
 	 * @return The ticks gone by (Increments every 20ms, which equals one
 	 *         second)
 	 */
-	public synchronized int getTicks() {
+	public int getTicks() {
 		return tick;
 	}
 
