@@ -18,8 +18,8 @@ public class OI {
 	 */
 	public int[] motors = 
 		{
-			0,
 			1,
+			0,
 			2,
 			3
 		};
