@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 
-public class Lift extends Subsystem {
-
+public class Collect extends Subsystem {
+	
 	enum DriveType {
 		JOYSTICK, CONTROLLER;
 	}
@@ -22,7 +22,7 @@ public class Lift extends Subsystem {
 
 	private boolean isAuto;
 
-	public Lift(GenericHID control, PWMSpeedController controller) {
+	public Collect(GenericHID control, PWMSpeedController controller) {
 		super();
 
 		if (control instanceof XboxController) {
@@ -35,13 +35,13 @@ public class Lift extends Subsystem {
 		this.controller = controller;
 		this.isAuto = false;
 	}
-
-	public Lift(PWMSpeedController controller) {
+	
+	public Collect(PWMSpeedController controller) {
 		super();
 		
 		this.controller = controller;
 	}
-
+	
 	/*
 	 * Functions:
 	 * 
@@ -86,7 +86,7 @@ public class Lift extends Subsystem {
 		if (controller.isAlive())
 			controller.disable();
 	}
-
+	
 	private void decideDrive() {
 		switch (type) {
 			case JOYSTICK:
@@ -102,15 +102,15 @@ public class Lift extends Subsystem {
 				break;
 		}
 	}
-
+	
 	@Override
 	public String getName() {
-		return "Lift";
+		return "Collect";
 	}
 
 	@Override
 	public String getDescription() {
-		return "The lift that rolls up the rope, lifting the robot.";
+		return "Collects and rolls balls from the bot.";
 	}
 
 }
