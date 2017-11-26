@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5129.robot;
 
 import org.usfirst.frc.team5129.subsystem.Camera;
+import org.usfirst.frc.team5129.subsystem.Collect;
 import org.usfirst.frc.team5129.subsystem.Drive;
 import org.usfirst.frc.team5129.subsystem.Lift;
 import org.usfirst.frc.team5129.subsystem.meta.Routine;
@@ -24,6 +25,7 @@ public class Robot extends IterativeRobot {
 	private XboxController controller;
 
 	private Spark lift;
+	private Spark collect;
 
 	private Subsystem[] subs;
 
@@ -39,13 +41,13 @@ public class Robot extends IterativeRobot {
 				oi.motors[3]);
 		
 		stick = new Joystick(oi.controllers[0]);
-		
 		controller = new XboxController(oi.controllers[1]);
 		
 		lift = new Spark(oi.components[0]);
+		collect = new Spark(oi.components[1]);
 
 		subs = new Subsystem[] { new Drive(drive, controller), new Lift(lift),
-				new Camera() };
+				new Collect(collect), new Camera() };
 
 	}
 

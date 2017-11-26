@@ -7,6 +7,17 @@ package org.usfirst.frc.team5129.robot;
  */
 public class OI {
 	
+	/*
+	 * Ralph:
+	 * 
+	 * Drive (1,0,2,3) Inverted
+	 * Lift (8)
+	 * Collect (9)
+	 * 
+	 * Joystick (0)
+	 * XboxController (1)
+	 */
+	
 	public OI() {
 		
 	}
@@ -31,17 +42,18 @@ public class OI {
 	 */
 	public int[] controllers = 
 		{
-			7,
-			8
+			0,
+			1
 		};
 	
 	/**
 	 * Describes other components. They go in this order:
 	 * 
-	 * Lift (SPARK Controller)
+	 * Lift (SPARK Controller), Collect (SPARK Controller)
 	 */
 	public int[] components =
 		{
+			8,
 			9
 		};
 }
