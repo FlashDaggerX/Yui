@@ -1,29 +1,26 @@
 package org.usfirst.frc.team5129.subsystem;
 
 import org.usfirst.frc.team5129.safety.MotorState;
-import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
+import org.usfirst.frc.team5129.subsystem.meta.Component;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.XboxController;
 
-public class Lift extends Subsystem {
+public class Lift extends Component {
 
 	enum DriveType {
-		JOYSTICK, CONTROLLER;
+		UNKNOWN, JOYSTICK, CONTROLLER;
 	}
 
-	private DriveType type;
-
-	private GenericHID control;
-
-	private PWMSpeedController controller;
+	private DriveType type = DriveType.UNKNOWN;
 
 	private boolean isAuto;
 
 	public Lift(GenericHID control, PWMSpeedController controller) {
-		super();
+		super(controller);
 
 		if (control instanceof XboxController) {
 			type = DriveType.CONTROLLER;
@@ -31,15 +28,13 @@ public class Lift extends Subsystem {
 			type = DriveType.JOYSTICK;
 		}
 
-		this.control = control;
-		this.controller = controller;
 		this.isAuto = false;
 	}
 
 	public Lift(PWMSpeedController controller) {
-		super();
+		super(controller);
 		
-		this.controller = controller;
+		this.isAuto = false;
 	}
 
 	/*
@@ -55,10 +50,10 @@ public class Lift extends Subsystem {
 					decideDrive();
 					break;
 				case 1:
-					controller.set(1);
+					getPWM().set(1);
 					break;
 				case 2:
-					controller.set(-1);
+					getPWM().set(-1);
 					break;
 				case 3:
 					isAuto = true;
@@ -69,7 +64,7 @@ public class Lift extends Subsystem {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onStall() {
 		return true;
@@ -77,8 +72,8 @@ public class Lift extends Subsystem {
 
 	@Override
 	public void onStop() {
-		if (controller.isAlive())
-			controller.disable();
+		if (getPWM().isAlive())
+			getPWM().disable();
 	}
 
 	@Override
@@ -90,15 +85,20 @@ public class Lift extends Subsystem {
 	private void decideDrive() {
 		switch (type) {
 			case JOYSTICK:
-				controller.set(control.getY());
+				getPWM().set(getController().getY());
 				break;
 			case CONTROLLER:
 				int power = 0;
-				if (control.getRawButton(1))
+				if (getController().getRawButton(1))
 					power = 1;
 				else
 					power = 0;
-				controller.set(power);
+				getPWM().set(power);
+				break;
+			case UNKNOWN:
+				DriverStation.reportError(
+						"STATE=RUNNING:lift_subsys_type_unknown",
+						true);
 				break;
 		}
 	}

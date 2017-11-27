@@ -3,6 +3,8 @@ package org.usfirst.frc.team5129.subsystem.meta;
 import org.usfirst.frc.team5129.safety.ControlSafety;
 import org.usfirst.frc.team5129.safety.MotorState;
 
+import edu.wpi.first.wpilibj.GenericHID;
+
 /**
  * An implementation for an iterative subsystem.
  * 
@@ -15,6 +17,12 @@ public abstract class Subsystem extends ControlSafety {
 	private Routine routine; // The specified routine, if there's one.
 
 	private int tick; // Seconds. Increased in 'periodic()' methods
+	
+	private GenericHID control;
+	
+	public Subsystem(GenericHID controller) {
+		this.control = controller;
+	}
 	
 	/**
 	 * Runs a number of functions when required.
@@ -95,6 +103,14 @@ public abstract class Subsystem extends ControlSafety {
 	 */
 	public Routine getRoutine() {
 		return routine;
+	}
+	
+	/**
+	 * 
+	 * @return The subsystem's controller
+	 */
+	public GenericHID getController() {
+		return control;
 	}
 
 }

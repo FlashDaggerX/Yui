@@ -24,8 +24,8 @@ public class Drive extends Subsystem {
 
 	private boolean isAuto;
 
-	public Drive(RobotDrive drive, GenericHID control) {
-		super();
+	public Drive(GenericHID control, RobotDrive drive) {
+		super(control);
 
 		if (control instanceof Joystick)
 			type = DriveType.JOYSTICK;

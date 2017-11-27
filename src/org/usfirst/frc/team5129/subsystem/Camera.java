@@ -20,7 +20,7 @@ public class Camera extends Subsystem {
 	private volatile CvSource outputStream;
 
 	public Camera() {
-		super();
+		super(null);
 	}
 
 	/*
