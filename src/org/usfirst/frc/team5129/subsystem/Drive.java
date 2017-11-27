@@ -20,7 +20,6 @@ public class Drive extends Subsystem {
 	private DriveType type = DriveType.JOYSTICK;
 
 	private RobotDrive drive;
-	private GenericHID control;
 
 	private boolean isAuto;
 
@@ -31,17 +30,16 @@ public class Drive extends Subsystem {
 			type = DriveType.JOYSTICK;
 		else if (control instanceof XboxController)
 			type = DriveType.CONTROLLER;
-		
+
 		this.drive = drive;
-		this.control = control;
 		this.isAuto = false;
 	}
 
 	/*
 	 * Functions:
 	 * 
-	 * [0 - Manual] [1 - Forward] [2 - Back] [3 - Left] [4 - Right]   
-	 * [5 - Swap Auto] [6 - Swap Manual]
+	 * [0 - Manual] [1 - Forward] [2 - Back] [3 - Left] [4 - Right] [5 - Swap
+	 * Auto] [6 - Swap Manual]
 	 */
 	@Override
 	public void complete(byte i) {
@@ -70,13 +68,14 @@ public class Drive extends Subsystem {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onStall() {
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kFrontRight, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
 		drive.setInvertedMotor(MotorType.kRearRight, true);
+		
 		DriverStation.reportWarning("STATE=STALLED:drive_subsys_inverted",
 				false);
 		return true;
@@ -96,10 +95,11 @@ public class Drive extends Subsystem {
 	private void decideDrive() {
 		switch (type) {
 			case JOYSTICK:
-				drive.arcadeDrive(control);
+				drive.arcadeDrive(getController());
 				break;
 			case CONTROLLER:
-				drive.drive(control.getY(Hand.kLeft), control.getX(Hand.kRight));
+				drive.drive(getController().getY(Hand.kLeft),
+						getController().getX(Hand.kRight));
 				break;
 		}
 	}
