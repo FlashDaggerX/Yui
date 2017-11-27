@@ -20,7 +20,6 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<Integer> choice;
 
 	private RobotDrive drive;
-	@SuppressWarnings("unused")
 	private Joystick stick;
 	private XboxController controller;
 
@@ -39,15 +38,18 @@ public class Robot extends IterativeRobot {
 
 		drive = new RobotDrive(oi.motors[0], oi.motors[1], oi.motors[2],
 				oi.motors[3]);
-		
+
 		stick = new Joystick(oi.controllers[0]);
 		controller = new XboxController(oi.controllers[1]);
-		
+
 		lift = new Spark(oi.components[0]);
 		collect = new Spark(oi.components[1]);
 
-		subs = new Subsystem[] { new Drive(drive, controller), new Lift(lift),
-				new Collect(collect), new Camera() };
+		subs = new Subsystem[] {
+				new Drive(stick, drive),
+				new Lift(controller, lift),
+				new Collect(controller, collect),
+				new Camera() };
 
 	}
 
@@ -64,7 +66,7 @@ public class Robot extends IterativeRobot {
 		switch (choose) {
 			case 0:
 				subs[0].setRoutine(new Routine() {
-					
+
 					@Override
 					public void doRoutine() {
 						if (subs[0].getTicks() == 0) {
