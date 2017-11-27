@@ -4,7 +4,7 @@ package org.usfirst.frc.team5129.subsystem.meta;
  * Describes a routine in a Subsystem.
  * 
  * @author kyleg
- * @see AutoSubsystem
+ * @see Subsystem
  */
 @FunctionalInterface
 public interface Routine {

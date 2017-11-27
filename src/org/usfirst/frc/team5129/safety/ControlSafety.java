@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Implements safety features in a subsystem.
- * <p>
- * You could also consider it a first layer before the stop command.
  * 
  * @author kyleg
  */
@@ -40,6 +38,8 @@ public abstract class ControlSafety {
 
 	/**
 	 * Stops the system in the 'RUNNING' state.
+	 * 
+	 * @see ControlSafety#onStop()
 	 */
 	public void stop() {
 		if (state == MotorState.STOPPED || state == MotorState.STALLED)
@@ -49,8 +49,9 @@ public abstract class ControlSafety {
 	}
 
 	/**
-	 * Stalls the system in the 'RUNNING' state. Usually used to perform
-	 * function mid-run.
+	 * Stalls the system in the 'RUNNING' state.
+	 * 
+	 * @see ControlSafety#onStall()
 	 */
 	public void stall() {
 		if (state == MotorState.STOPPED || state == MotorState.STALLED)
@@ -61,10 +62,6 @@ public abstract class ControlSafety {
 		else
 			DriverStation.reportError(
 					"STATE=STALLED:subsys_returned_false_loop", true);
-	}
-
-	public void setKillButton(byte id) {
-		this.killID = id;
 	}
 
 }

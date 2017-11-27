@@ -69,13 +69,7 @@ public class Lift extends Subsystem {
 			}
 		}
 	}
-
-	@Override
-	public void onTick() {
-		if (isAuto)
-			getRoutine().doRoutine();
-	}
-
+	
 	@Override
 	public boolean onStall() {
 		return true;
@@ -85,6 +79,12 @@ public class Lift extends Subsystem {
 	public void onStop() {
 		if (controller.isAlive())
 			controller.disable();
+	}
+
+	@Override
+	public void onTick() {
+		if (isAuto)
+			getRoutine().doRoutine();
 	}
 
 	private void decideDrive() {

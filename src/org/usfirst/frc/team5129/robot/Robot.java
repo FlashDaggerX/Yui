@@ -70,6 +70,9 @@ public class Robot extends IterativeRobot {
 						if (subs[0].getTicks() == 0) {
 							subs[0].complete((byte) 2);
 						}
+						if (subs[0].getTicks() == 5) {
+							subs[0].complete((byte) 6);
+						}
 					}
 				});
 				subs[0].complete((byte) 5);

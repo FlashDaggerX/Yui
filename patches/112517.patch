@@ -1,0 +1,101 @@
+diff --git a/src/org/usfirst/frc/team5129/subsystem/meta/AutoSubsystem.java b/src/org/usfirst/frc/team5129/subsystem/meta/AutoSubsystem.java
+deleted file mode 100644
+index ef54524..0000000
+--- a/src/org/usfirst/frc/team5129/subsystem/meta/AutoSubsystem.java
++++ /dev/null
+@@ -1,71 +0,0 @@
+-package org.usfirst.frc.team5129.subsystem.meta;
+-
+-/**
+- * An autonomous implementation of a subsystem.
+- * 
+- * @author kyleg
+- * 
+- */
+-public abstract class AutoSubsystem extends Subsystem {
+-
+-	private volatile double power; // Motor power of the autonomous system
+-	private volatile double curve; // Motor curve
+-
+-	public AutoSubsystem() {
+-		super();
+-	}
+-
+-	/**
+-	 * Sets the motor power during routines.
+-	 * 
+-	 * @param power
+-	 *            The power of the motor (Between -1 and 1)
+-	 */
+-	public synchronized void setPower(double power) {
+-		this.power = power;
+-	}
+-
+-	/**
+-	 * Sets the motor's curve.
+-	 * 
+-	 * @param curve
+-	 *            The curve (Between -1 and 1)
+-	 */
+-	public synchronized void setCurve(double curve) {
+-		this.curve = curve;
+-	}
+-
+-	/**
+-	 * 
+-	 * @return The motor power.
+-	 */
+-	public synchronized double getPower() {
+-		return power;
+-	}
+-	
+-	/**
+-	 * 
+-	 * @return The motor curve.
+-	 */
+-	public synchronized double getCurve() {
+-		return curve;
+-	}
+-
+-	@Override
+-	public abstract void complete(int i, final Routine r);
+-
+-	@Override
+-	public abstract void onTick();
+-
+-	@Override
+-	public abstract boolean onStall();
+-	
+-	@Override
+-	public abstract void onStop();
+-
+-	@Override
+-	public abstract String getName();
+-
+-	@Override
+-	public abstract String getDescription();
+-}
+diff --git a/src/org/usfirst/frc/team5129/subsystem/meta/State.java b/src/org/usfirst/frc/team5129/subsystem/meta/State.java
+deleted file mode 100644
+index 112270d..0000000
+--- a/src/org/usfirst/frc/team5129/subsystem/meta/State.java
++++ /dev/null
+@@ -1,18 +0,0 @@
+-package org.usfirst.frc.team5129.subsystem.meta;
+-
+-public enum State {
+-	
+-	STOPPED(0),
+-	STALLED(1),
+-	RUNNING(2);
+-	
+-	private int id;
+-	
+-	State(int id) {
+-		this.id = id;
+-	}
+-	
+-	public int getID() {
+-		return id;
+-	}
+-}

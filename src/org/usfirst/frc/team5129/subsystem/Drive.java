@@ -70,6 +70,22 @@ public class Drive extends Subsystem {
 			}
 		}
 	}
+	
+	@Override
+	public boolean onStall() {
+		drive.setInvertedMotor(MotorType.kFrontLeft, true);
+		drive.setInvertedMotor(MotorType.kFrontRight, true);
+		drive.setInvertedMotor(MotorType.kRearLeft, true);
+		drive.setInvertedMotor(MotorType.kRearRight, true);
+		DriverStation.reportWarning("STATE=STALLED:drive_subsys_inverted",
+				false);
+		return true;
+	}
+
+	@Override
+	public void onStop() {
+		drive.stopMotor();
+	}
 
 	@Override
 	public void onTick() {
@@ -86,22 +102,6 @@ public class Drive extends Subsystem {
 				drive.drive(control.getY(Hand.kLeft), control.getX(Hand.kRight));
 				break;
 		}
-	}
-
-	@Override
-	public boolean onStall() {
-		drive.setInvertedMotor(MotorType.kFrontLeft, true);
-		drive.setInvertedMotor(MotorType.kFrontRight, true);
-		drive.setInvertedMotor(MotorType.kRearLeft, true);
-		drive.setInvertedMotor(MotorType.kRearRight, true);
-		DriverStation.reportWarning("STATE=STALLED:drive_subsys_inverted",
-				false);
-		return true;
-	}
-
-	@Override
-	public void onStop() {
-		drive.stopMotor();
 	}
 
 	@Override

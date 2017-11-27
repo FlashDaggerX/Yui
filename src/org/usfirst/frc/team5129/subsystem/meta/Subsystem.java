@@ -15,7 +15,7 @@ public abstract class Subsystem extends ControlSafety {
 	private Routine routine; // The specified routine, if there's one.
 
 	private int tick; // Seconds. Increased in 'periodic()' methods
-
+	
 	/**
 	 * Runs a number of functions when required.
 	 * 
@@ -23,7 +23,13 @@ public abstract class Subsystem extends ControlSafety {
 	 *        'complete()'
 	 */
 	public abstract void complete(byte i);
-
+	
+	@Override
+	public abstract boolean onStall();
+	
+	@Override
+	public abstract void onStop();
+	
 	/**
 	 * Called when the subsystem is ticked.
 	 */

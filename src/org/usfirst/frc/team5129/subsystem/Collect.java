@@ -69,22 +69,22 @@ public class Collect extends Subsystem {
 			}
 		}
 	}
+	
+	@Override
+	public boolean onStall() {
+		return true;
+	}
+	
+	@Override
+	public void onStop() {
+		if (controller.isAlive())
+			controller.disable();
+	}
 
 	@Override
 	public void onTick() {
 		if (isAuto)
 			getRoutine().doRoutine();
-	}
-
-	@Override
-	public boolean onStall() {
-		return true;
-	}
-
-	@Override
-	public void onStop() {
-		if (controller.isAlive())
-			controller.disable();
 	}
 	
 	private void decideDrive() {

@@ -81,12 +81,7 @@ public class Camera extends Subsystem {
 			}
 		}
 	}
-
-	@Override
-	public void onTick() {
-
-	}
-
+	
 	@Override
 	public boolean onStall() {
 		return true;
@@ -107,6 +102,11 @@ public class Camera extends Subsystem {
 		vision = null;
 		DriverStation.reportWarning(
 				"STATE=STOPPED_?_STALLED:vision_subsys_thread_died", false);
+	}
+	
+	@Override
+	public void onTick() {
+
 	}
 	
 	@Override
