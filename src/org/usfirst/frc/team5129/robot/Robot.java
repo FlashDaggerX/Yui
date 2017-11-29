@@ -4,7 +4,7 @@ import org.usfirst.frc.team5129.subsystem.Camera;
 import org.usfirst.frc.team5129.subsystem.Collect;
 import org.usfirst.frc.team5129.subsystem.Drive;
 import org.usfirst.frc.team5129.subsystem.Lift;
-import org.usfirst.frc.team5129.subsystem.meta.Routine;
+import org.usfirst.frc.team5129.subsystem.meta.Component;
 import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -27,6 +27,7 @@ public class Robot extends IterativeRobot {
 	private Spark collect;
 
 	private Subsystem[] subs;
+	private Component[] coms;
 
 	@Override
 	public void robotInit() {
@@ -44,22 +45,25 @@ public class Robot extends IterativeRobot {
 
 		lift = new Spark(oi.components[0]);
 		collect = new Spark(oi.components[1]);
-
+		
+		// TODO Robot drive.. Output not updated enough
 		subs = new Subsystem[] {
 				new Drive(stick, drive),
-				new Lift(controller, lift),
-				new Collect(controller, collect),
 				new Camera() };
-
+		
+		coms = new Component[] {
+				new Lift(controller, lift),
+				new Collect(controller, collect)
+		};
+		
+		subs[1].start();
+		subs[1].complete((byte) 0);
 	}
-
-	@Override
-	public void autonomousInit() {
-		for (Subsystem s : subs) {
-			s.start();
-		}
-
-		int choose = Integer.parseInt(choice.getTable().getString(
+	
+	/*
+	 * (non-Javadoc)
+	 * @see edu.wpi.first.wpilibj.IterativeRobot#autonomousInit()
+	 * 		int choose = Integer.parseInt(choice.getTable().getString(
 				"autonomous_routine",
 				"0"));
 
@@ -79,6 +83,14 @@ public class Robot extends IterativeRobot {
 				});
 				subs[0].complete((byte) 5);
 				break;
+	 */
+	@Override
+	public void autonomousInit() {
+		for (Subsystem s : subs) {
+			s.start();
+		}
+		for (Component c : coms) {
+			c.start();
 		}
 	}
 
@@ -104,13 +116,21 @@ public class Robot extends IterativeRobot {
 			if (!s.getName().equalsIgnoreCase("CameraServer"))
 				s.complete((byte) 0);
 		}
+		for (Component c : coms) {
+			c.tick();
+		}
 	}
 
 	@Override
 	public void disabledInit() {
 		for (Subsystem s : subs) {
+			// TODO There's an error in one of the subs.
 			s.resetTicks();
 			s.stop();
+		}
+		for (Component c : coms) {
+			c.resetTicks();
+			c.stop();
 		}
 	}
 }

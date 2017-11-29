@@ -89,15 +89,13 @@ public class Camera extends Subsystem {
 	
 	@Override
 	public void onStop() {
-		if (vision.isAlive()) {
-			getOutputStream().free();
-			try {
-				vision.join();
-			} catch (InterruptedException e) {
-				DriverStation.reportError(
-						"STATE=STOPPED:vision_subsys_cannot_join_main",
-						true);
-			}
+		getOutputStream().free();
+		try {
+			vision.join();
+		} catch (InterruptedException e) {
+			DriverStation.reportError(
+					"STATE=STOPPED:vision_subsys_cannot_join_main",
+					true);
 		}
 		vision = null;
 		DriverStation.reportWarning(
