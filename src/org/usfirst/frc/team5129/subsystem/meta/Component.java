@@ -25,22 +25,16 @@ public abstract class Component extends Subsystem {
 	}
 
 	@Override
-	public abstract void complete(byte i);
-
-	@Override
 	public abstract boolean onStall();
 
 	@Override
 	public abstract void onStop();
-
+	
 	@Override
-	public abstract void onTick();
-
+	public abstract void complete(byte i);
+	
 	@Override
-	public abstract String getName();
-
-	@Override
-	public abstract String getDescription();
+	public abstract byte getID();
 	
 	/**
 	 * 

@@ -3,6 +3,7 @@ package org.usfirst.frc.team5129.subsystem.meta;
 import org.usfirst.frc.team5129.safety.ControlSafety;
 import org.usfirst.frc.team5129.safety.MotorState;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 
 /**
@@ -16,42 +17,43 @@ public abstract class Subsystem extends ControlSafety {
 
 	private Routine routine; // The specified routine, if there's one.
 
-	private int tick; // Seconds. Increased in 'periodic()' methods
-	
 	private GenericHID control;
-	
+
 	public Subsystem(GenericHID controller) {
 		this.control = controller;
+
+		this.routine = new Routine() {
+
+			@Override
+			public void doRoutine() {
+				DriverStation.reportWarning("subsys_overload_routine", false);
+			}
+		};
 	}
-	
+
 	/**
 	 * Runs a number of functions when required.
 	 * 
-	 * @param i The function. Stored usually in a switch statement in
-	 *        'complete()'
+	 * @param i The function.
 	 */
 	public abstract void complete(byte i);
-	
-	@Override
-	public abstract boolean onStall();
-	
-	@Override
-	public abstract void onStop();
-	
-	/**
-	 * Called when the subsystem is ticked.
-	 */
-	public abstract void onTick();
 
 	/**
-	 * @return The subsystem's name
+	 * Used to compare
+	 * 
+	 * @return The subsystem's bit value.
 	 */
-	public abstract String getName();
+	public abstract byte getID();
 
-	/**
-	 * @return The subsystem description
-	 */
-	public abstract String getDescription();
+	@Override
+	public void onStop() {
+		DriverStation.reportWarning("overload_subsys_onStop()", false);
+	}
+
+	@Override
+	public boolean onStall() {
+		return true;
+	}
 
 	/**
 	 * Sets the routine, if the user wants one.
@@ -60,33 +62,6 @@ public abstract class Subsystem extends ControlSafety {
 	 */
 	public void setRoutine(Routine r) {
 		this.routine = r;
-	}
-
-	/**
-	 * Increments the subsystem time.
-	 * <p>
-	 * Only ticks if the subsystem's state is 'RUNNING'
-	 */
-	public void tick() {
-		if (state == MotorState.RUNNING) {
-			tick++;
-			onTick();
-		}
-	}
-
-	/**
-	 * Resets the tick count to 0.
-	 */
-	public void resetTicks() {
-		tick = 0;
-	}
-
-	/**
-	 * @return The ticks gone by (Increments every 20ms, which equals one
-	 *         second)
-	 */
-	public int getTicks() {
-		return tick;
 	}
 
 	/**
@@ -104,9 +79,8 @@ public abstract class Subsystem extends ControlSafety {
 	public Routine getRoutine() {
 		return routine;
 	}
-	
+
 	/**
-	 * 
 	 * @return The subsystem's controller
 	 */
 	public GenericHID getController() {
