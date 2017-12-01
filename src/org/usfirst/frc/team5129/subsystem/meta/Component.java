@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5129.subsystem.meta;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 
@@ -25,10 +26,14 @@ public abstract class Component extends Subsystem {
 	}
 
 	@Override
-	public abstract boolean onStall();
+	public boolean onStall() {
+		return true;
+	}
 
 	@Override
-	public abstract void onStop();
+	public void onStop() {
+		DriverStation.reportWarning("overload_component_onStop()", false);
+	}
 	
 	@Override
 	public abstract void complete(byte i);

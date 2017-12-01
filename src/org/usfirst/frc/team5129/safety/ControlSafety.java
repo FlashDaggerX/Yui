@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 public abstract class ControlSafety {
 
 	private MotorState state = MotorState.STOPPED;
-
-	public byte killID; // The ID of the kill button.
 	
 	/**
 	 * Called when the state is changed to 'STALLED'
@@ -63,5 +61,11 @@ public abstract class ControlSafety {
 			DriverStation.reportError(
 					"STATE=STALLED:subsys_returned_false_loop", true);
 	}
-
+	
+	/**
+	 * @return State of the subsystem
+	 */
+	public MotorState getMotorState() {
+		return state;
+	}
 }

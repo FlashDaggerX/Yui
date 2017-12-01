@@ -1,7 +1,6 @@
 package org.usfirst.frc.team5129.subsystem.meta;
 
 import org.usfirst.frc.team5129.safety.ControlSafety;
-import org.usfirst.frc.team5129.safety.MotorState;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -12,8 +11,6 @@ import edu.wpi.first.wpilibj.GenericHID;
  * @author kyleg
  */
 public abstract class Subsystem extends ControlSafety {
-
-	private MotorState state = MotorState.STOPPED;
 
 	private Routine routine; // The specified routine, if there's one.
 
@@ -62,13 +59,6 @@ public abstract class Subsystem extends ControlSafety {
 	 */
 	public void setRoutine(Routine r) {
 		this.routine = r;
-	}
-
-	/**
-	 * @return State of the subsystem
-	 */
-	public MotorState getMotorState() {
-		return state;
 	}
 
 	/**

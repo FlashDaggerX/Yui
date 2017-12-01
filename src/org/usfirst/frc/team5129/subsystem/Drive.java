@@ -5,7 +5,6 @@ import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 
 public class Drive extends Subsystem {
 	
@@ -20,22 +19,20 @@ public class Drive extends Subsystem {
 	@Override
 	public void complete(byte i) {
 		if (getMotorState() == MotorState.RUNNING) {
-			switch(i) {
-				case 100:
+			switch (i) {
+				case 10:
 					drive.arcadeDrive(getController());
 					break;
-				case 110:
-					for (MotorType m : RobotDrive.MotorType.values()) {
-						drive.setInvertedMotor(m, true);
-					}
-					break;
+				case 20:
+					drive.drive(1, 0);
+					// TODO Actually do something here :/
 			}
 		}
 	}
 
 	@Override
 	public byte getID() {
-		return 50;
+		return 10;
 	}
 
 }
