@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot {
 		collect = new Spark(oi.components[1]);
 
 		stick = new Joystick(oi.controllers[0]);
+		controller = new XboxController(oi.controllers[1]);
 
 		subs = new Subsystem[] {
 				new Drive(stick, drive),
@@ -43,7 +44,7 @@ public class Robot extends IterativeRobot {
 				new Lift(controller, lift),
 				new Collect(controller, collect)
 		};
-		
+
 		subs[1].start();
 		subs[1].complete((byte) 10);
 	}
