@@ -1,7 +1,5 @@
 package org.usfirst.frc.team5129.safety;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
 /**
  * Implements safety features in a subsystem.
  * 
@@ -10,13 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 public abstract class ControlSafety {
 
 	private MotorState state = MotorState.STOPPED;
-	
-	/**
-	 * Called when the state is changed to 'STALLED'
-	 * 
-	 * @return Did the operation complete?
-	 */
-	public abstract boolean onStall();
 
 	/**
 	 * Called when the state is changed to 'STOPPED'
@@ -24,7 +15,7 @@ public abstract class ControlSafety {
 	 * @return Did the operation complete?
 	 */
 	public abstract void onStop();
-	
+
 	/**
 	 * Starts the system in the 'STOP' or 'STALL' state.
 	 */
@@ -46,22 +37,6 @@ public abstract class ControlSafety {
 		onStop();
 	}
 
-	/**
-	 * Stalls the system in the 'RUNNING' state.
-	 * 
-	 * @see ControlSafety#onStall()
-	 */
-	public void stall() {
-		if (state == MotorState.STOPPED || state == MotorState.STALLED)
-			return;
-		state = MotorState.STALLED;
-		if (onStall())
-			state = MotorState.RUNNING;
-		else
-			DriverStation.reportError(
-					"STATE=STALLED:subsys_returned_false_loop", true);
-	}
-	
 	/**
 	 * @return State of the subsystem
 	 */

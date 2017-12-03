@@ -26,11 +26,6 @@ public abstract class Component extends Subsystem {
 	}
 
 	@Override
-	public boolean onStall() {
-		return true;
-	}
-
-	@Override
 	public void onStop() {
 		DriverStation.reportWarning("overload_component_onStop()", false);
 	}

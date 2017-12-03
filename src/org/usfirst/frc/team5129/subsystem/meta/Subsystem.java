@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 public abstract class Subsystem extends ControlSafety {
 
 	private Routine routine; // The specified routine, if there's one.
-
+	
 	private GenericHID control;
 
 	public Subsystem(GenericHID controller) {
@@ -45,11 +45,6 @@ public abstract class Subsystem extends ControlSafety {
 	@Override
 	public void onStop() {
 		DriverStation.reportWarning("overload_subsys_onStop()", false);
-	}
-
-	@Override
-	public boolean onStall() {
-		return true;
 	}
 
 	/**
