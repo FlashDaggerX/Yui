@@ -18,7 +18,7 @@ public class Collect extends Component {
 	private DriveType type = DriveType.UNKNOWN;
 
 	public Collect(GenericHID control, PWMSpeedController controller) {
-		super(controller);
+		super(control, controller);
 
 		if (control instanceof XboxController) {
 			type = DriveType.CONTROLLER;

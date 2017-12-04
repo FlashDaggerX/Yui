@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5129.subsystem.meta;
 
 import org.usfirst.frc.team5129.safety.ControlSafety;
+import org.usfirst.frc.team5129.safety.MotorState;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -13,8 +14,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 public abstract class Subsystem extends ControlSafety {
 
 	private Routine routine; // The specified routine, if there's one.
-	
+
 	private GenericHID control;
+
+	private int tick;
 
 	public Subsystem(GenericHID controller) {
 		this.control = controller;
@@ -41,6 +44,22 @@ public abstract class Subsystem extends ControlSafety {
 	 * @return The subsystem's bit value.
 	 */
 	public abstract byte getID();
+
+	public void tick() {
+		tick++;
+		if (getMotorState() == MotorState.RUNNING)
+			DriverStation.reportWarning(
+					"STATE=RUNNING:ticking_while_stopped",
+					false);
+	}
+
+	public void resetTicks() {
+		tick = 0;
+	}
+
+	public int getTicks() {
+		return tick;
+	}
 
 	@Override
 	public void onStop() {

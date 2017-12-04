@@ -36,17 +36,6 @@ public class OI {
 		};
 	
 	/**
-	 * Describes any controller ports. They go in this order:
-	 * 
-	 * Joystick, Controller
-	 */
-	public int[] controllers = 
-		{
-			0,
-			1
-		};
-	
-	/**
 	 * Describes other components. They go in this order:
 	 * 
 	 * Lift (SPARK Controller), Collect (SPARK Controller)
@@ -55,5 +44,16 @@ public class OI {
 		{
 			8,
 			9
+		};	
+	
+	/**
+	 * Describes any controller ports. They go in this order:
+	 * 
+	 * Joystick, Controller
+	 */
+	public int[] controllers = 
+		{
+			0,
+			1
 		};
 }

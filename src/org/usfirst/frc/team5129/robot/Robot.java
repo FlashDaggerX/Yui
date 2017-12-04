@@ -4,6 +4,7 @@ import org.usfirst.frc.team5129.subsystem.Camera;
 import org.usfirst.frc.team5129.subsystem.Collect;
 import org.usfirst.frc.team5129.subsystem.Drive;
 import org.usfirst.frc.team5129.subsystem.Lift;
+import org.usfirst.frc.team5129.subsystem.meta.Routine;
 import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -48,18 +49,47 @@ public class Robot extends IterativeRobot {
 		subs[1].start();
 		subs[1].complete((byte) 10);
 	}
+	
+	@Override
+	public void autonomousInit() {
+		subs[0].start();
+		subs[0].setRoutine(new Routine() {
+			@Override
+			public void doRoutine() {
+				subs[0].tick();
+				if (subs[0].getTicks() == 3) {
+					subs[0].complete((byte) 20);
+				}
+				if (subs[0].getTicks() == 5) {
+					subs[0].stop();
+				}
+			}
+			
+		});
+	}
+	
+	@Override
+	public void autonomousPeriodic() {
+		while (isEnabled()) {
+			subs[0].getRoutine().doRoutine();
+		}
+	}
 
 	@Override
 	public void teleopInit() {
 		for (Subsystem s : subs) {
 			s.start();
 		}
+		subs[0].complete((byte) 50);
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		while (isOperatorControl()) {
-			subs[0].complete((byte) 10);
+		while (isOperatorControl() && isEnabled()) {
+			for (Subsystem s : subs) {
+				if (s.getID() != (byte) 20)
+					s.complete((byte) 10);
+			}
 		}
 	}
 

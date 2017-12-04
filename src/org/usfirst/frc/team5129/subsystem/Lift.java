@@ -18,7 +18,7 @@ public class Lift extends Component {
 	private DriveType type = DriveType.UNKNOWN;
 
 	public Lift(GenericHID control, PWMSpeedController controller) {
-		super(controller);
+		super(control, controller);
 
 		if (control instanceof XboxController) {
 			type = DriveType.CONTROLLER;
@@ -60,10 +60,11 @@ public class Lift extends Component {
 				break;
 			case CONTROLLER:
 				int power = 0;
-				if (getController().getRawButton(1))
+				if (getController().getRawButton(3)) {
 					power = 1;
-				else
+				} else {
 					power = 0;
+				}
 				getPWM().set(power);
 				break;
 			case UNKNOWN:
