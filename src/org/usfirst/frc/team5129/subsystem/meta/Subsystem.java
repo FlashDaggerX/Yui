@@ -1,7 +1,6 @@
 package org.usfirst.frc.team5129.subsystem.meta;
 
 import org.usfirst.frc.team5129.safety.ControlSafety;
-import org.usfirst.frc.team5129.safety.MotorState;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -46,11 +45,8 @@ public abstract class Subsystem extends ControlSafety {
 	public abstract byte getID();
 
 	public void tick() {
+		onTick();
 		tick++;
-		if (getMotorState() == MotorState.RUNNING)
-			DriverStation.reportWarning(
-					"STATE=RUNNING:ticking_while_stopped",
-					false);
 	}
 
 	public void resetTicks() {
@@ -63,7 +59,11 @@ public abstract class Subsystem extends ControlSafety {
 
 	@Override
 	public void onStop() {
-		DriverStation.reportWarning("overload_subsys_onStop()", false);
+		
+	}
+	
+	public void onTick() {
+		
 	}
 
 	/**

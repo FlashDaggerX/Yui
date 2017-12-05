@@ -1,5 +1,8 @@
 package org.usfirst.frc.team5129.robot;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.usfirst.frc.team5129.subsystem.Camera;
 import org.usfirst.frc.team5129.subsystem.Collect;
 import org.usfirst.frc.team5129.subsystem.Drive;
@@ -48,15 +51,25 @@ public class Robot extends IterativeRobot {
 
 		subs[1].start();
 		subs[1].complete((byte) 10);
+		
+		new Timer().schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				for (Subsystem s : subs) {
+					s.tick();
+				}
+			}
+		}, 0, 1000);
 	}
 	
 	@Override
 	public void autonomousInit() {
 		subs[0].start();
+		subs[0].resetTicks();
 		subs[0].setRoutine(new Routine() {
 			@Override
 			public void doRoutine() {
-				subs[0].tick();
 				if (subs[0].getTicks() == 3) {
 					subs[0].complete((byte) 20);
 				}
@@ -96,6 +109,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledInit() {
 		for (Subsystem s : subs) {
+			s.resetTicks();
 			if (s.getID() != (byte) 20)
 				s.stop();
 		}

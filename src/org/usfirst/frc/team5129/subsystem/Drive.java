@@ -40,7 +40,7 @@ public class Drive extends Subsystem {
 					decideDrive();
 					break;
 				case 20:
-					drive.drive(1, 0);
+					drive.drive(0.5, 0);
 				case 50:
 					for (MotorType m : RobotDrive.MotorType.values()) {
 						drive.setInvertedMotor(m, true);
