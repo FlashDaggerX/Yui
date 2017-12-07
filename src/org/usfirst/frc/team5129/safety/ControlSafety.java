@@ -31,7 +31,7 @@ public abstract class ControlSafety {
 	 * @see ControlSafety#onStop()
 	 */
 	public void stop() {
-		if (state == MotorState.STOPPED || state == MotorState.STALLED)
+		if (state == MotorState.STOPPED)
 			return;
 		state = MotorState.STOPPED;
 		onStop();

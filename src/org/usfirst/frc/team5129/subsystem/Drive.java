@@ -36,29 +36,29 @@ public class Drive extends Subsystem {
 	public void complete(byte i) {
 		if (getMotorState() == MotorState.RUNNING) {
 			switch (i) {
-				case 10:
-					decideDrive();
-					break;
-				case 20:
-					drive.drive(0.5, 0);
-				case 50:
-					for (MotorType m : RobotDrive.MotorType.values()) {
-						drive.setInvertedMotor(m, true);
-					}
-					break;
+			case 10:
+				decideDrive();
+				break;
+			case 20:
+				drive.drive(0.5, 0);
+			case 50:
+				for (MotorType m : RobotDrive.MotorType.values()) {
+					drive.setInvertedMotor(m, true);
+				}
+				break;
 			}
 		}
 	}
 
 	private void decideDrive() {
 		switch (type) {
-			case JOYSTICK:
-				drive.arcadeDrive(getController());
-				break;
-			case CONTROLLER:
-				drive.drive(getController().getY(Hand.kLeft), getController()
-						.getX(Hand.kLeft));
-				break;
+		case JOYSTICK:
+			drive.arcadeDrive(getController());
+			break;
+		case CONTROLLER:
+			drive.drive(getController().getY(Hand.kLeft),
+					getController().getX(Hand.kLeft));
+			break;
 		}
 	}
 

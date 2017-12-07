@@ -3,8 +3,7 @@ package org.usfirst.frc.team5129.safety;
 public enum MotorState {
 
 	STOPPED(0),
-	STALLED(1),
-	RUNNING(2);
+	RUNNING(1);
 
 	private int id;
 

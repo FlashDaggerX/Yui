@@ -42,18 +42,14 @@ public class Robot extends IterativeRobot {
 		stick = new Joystick(oi.controllers[0]);
 		controller = new XboxController(oi.controllers[1]);
 
-		subs = new Subsystem[] {
-				new Drive(stick, drive),
-				new Camera(),
-				new Lift(controller, lift),
-				new Collect(controller, collect)
-		};
+		subs = new Subsystem[] { new Drive(stick, drive), new Camera(),
+				new Lift(controller, lift), new Collect(controller, collect) };
 
 		subs[1].start();
 		subs[1].complete((byte) 10);
-		
+
 		new Timer().schedule(new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				for (Subsystem s : subs) {
@@ -62,7 +58,7 @@ public class Robot extends IterativeRobot {
 			}
 		}, 0, 1000);
 	}
-	
+
 	@Override
 	public void autonomousInit() {
 		subs[0].start();
@@ -77,10 +73,10 @@ public class Robot extends IterativeRobot {
 					subs[0].stop();
 				}
 			}
-			
+
 		});
 	}
-	
+
 	@Override
 	public void autonomousPeriodic() {
 		while (isEnabled()) {

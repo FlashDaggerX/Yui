@@ -40,41 +40,40 @@ public class Lift extends Component {
 	public void complete(byte i) {
 		if (getMotorState() == MotorState.RUNNING) {
 			switch (i) {
-				case 10:
-					decideDrive();
-					break;
-				case 20:
-					getPWM().set(1);
-					break;
-				case 30:
-					getPWM().set(-1);
-					break;
+			case 10:
+				decideDrive();
+				break;
+			case 20:
+				getPWM().set(1);
+				break;
+			case 30:
+				getPWM().set(-1);
+				break;
 			}
 		}
 	}
 
 	private void decideDrive() {
 		switch (type) {
-			case JOYSTICK:
-				getPWM().set(getController().getY());
-				break;
-			case CONTROLLER:
-				int power = 0;
-				if (getController().getRawButton(3)) {
-					power = 1;
-				} else {
-					power = 0;
-				}
-				getPWM().set(power);
-				break;
-			case UNKNOWN:
-				DriverStation.reportError(
-						"STATE=RUNNING:lift_subsys_type_unknown",
-						true);
-				break;
+		case JOYSTICK:
+			getPWM().set(getController().getY());
+			break;
+		case CONTROLLER:
+			int power = 0;
+			if (getController().getRawButton(3)) {
+				power = 1;
+			} else {
+				power = 0;
+			}
+			getPWM().set(power);
+			break;
+		case UNKNOWN:
+			DriverStation.reportError("STATE=RUNNING:lift_subsys_type_unknown",
+					true);
+			break;
 		}
 	}
-	
+
 	@Override
 	public byte getID() {
 		return 30;
