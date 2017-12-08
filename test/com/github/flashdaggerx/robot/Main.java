@@ -10,6 +10,7 @@ public class Main {
 	}
 	
 	private State s = State.INIT;
+	private boolean isEnabled;
 	
 	private Timer t;
 	
@@ -27,6 +28,7 @@ public class Main {
 	
 	public void setup() {
 		t = new Timer();
+		isEnabled = false;
 		
 		robotInit();
 		
@@ -34,26 +36,28 @@ public class Main {
 
 			@Override
 			public void run() {
-				switch(s) {
-					case AUTO:
-						autonomousPeriodic();
-						break;
-					case DISABLED:
-						disabledPeriodic();
-						break;
-					case PRACTICE:
-						practicePeriodic();
-						break;
-					case TELEOP:
-						teleopPeriodic();
-						break;
-					case TEST:
-						testPeriodic();
-						break;
-					default:
-						System.out.println("er_unknown_state_terminating");
-						kill();
-						break;
+				if (isEnabled) {
+					switch(s) {
+						case AUTO:
+							autonomousPeriodic();
+							break;
+						case DISABLED:
+							disabledPeriodic();
+							break;
+						case PRACTICE:
+							practicePeriodic();
+							break;
+						case TELEOP:
+							teleopPeriodic();
+							break;
+						case TEST:
+							testPeriodic();
+							break;
+						default:
+							System.out.println("er_unknown_state_terminating");
+							kill();
+							break;
+					}
 				}
 			}
 			
@@ -88,6 +92,16 @@ public class Main {
 					break;
 			}
 		}
+	}
+	
+	public void enable() {
+		isEnabled = true;
+		System.out.println("out_robot_enabled");
+	}
+	
+	public void disable() {
+		isEnabled = false;
+		System.out.println("out_robot_disable");
 	}
 	
 	public synchronized void robotInit() {
