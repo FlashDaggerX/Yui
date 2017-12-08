@@ -60,10 +60,13 @@ public class Collect extends Component {
 				break;
 			case CONTROLLER:
 				int power = 0;
-				if (getController().getRawButton(1))
+				if (getController().getRawButton(1)) { // A
 					power = 1;
-				else
+				} else if (getController().getRawButton(2)) { // X
+					power = -1;
+				} else {
 					power = 0;
+				}
 				getPWM().set(power);
 				break;
 			case UNKNOWN:
