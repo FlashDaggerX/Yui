@@ -19,7 +19,7 @@ public class Lift extends Component {
 
 	public Lift(GenericHID control, PWMSpeedController controller) {
 		super(control, controller);
-
+		
 		if (control instanceof XboxController) {
 			type = DriveType.CONTROLLER;
 		} else if (control instanceof Joystick) {
