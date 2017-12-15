@@ -53,7 +53,11 @@ public class Drive extends Subsystem {
 	private void decideDrive() {
 		switch (type) {
 		case JOYSTICK:
-			drive.arcadeDrive(getController());
+			if (getController().getRawButton(2)) {
+				drive.stopMotor();
+			} else {
+				drive.arcadeDrive(getController());
+			}
 			break;
 		case CONTROLLER:
 			drive.drive(getController().getY(Hand.kLeft),

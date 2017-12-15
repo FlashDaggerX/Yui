@@ -45,9 +45,10 @@ public class Robot extends IterativeRobot {
 		subs = new Subsystem[] { new Drive(stick, drive), new Camera(),
 				new Lift(controller, lift), new Collect(controller, collect) };
 
+		subs[0].complete((byte) 50);
 		subs[1].start();
 		subs[1].complete((byte) 10);
-
+		
 		new Timer().schedule(new TimerTask() {
 
 			@Override
@@ -89,7 +90,6 @@ public class Robot extends IterativeRobot {
 		for (Subsystem s : subs) {
 			s.start();
 		}
-		subs[0].complete((byte) 50);
 	}
 
 	@Override
