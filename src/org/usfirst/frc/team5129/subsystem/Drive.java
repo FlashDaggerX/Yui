@@ -22,7 +22,7 @@ public class Drive extends Subsystem {
 
 	public Drive(GenericHID controller, RobotDrive drive) {
 		super(controller);
-		
+
 		if (controller instanceof Joystick) {
 			type = DriveType.JOYSTICK;
 		} else if (controller instanceof XboxController) {

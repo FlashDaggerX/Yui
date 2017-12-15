@@ -19,7 +19,7 @@ public class Lift extends Component {
 
 	public Lift(GenericHID control, PWMSpeedController controller) {
 		super(control, controller);
-		
+
 		if (control instanceof XboxController) {
 			type = DriveType.CONTROLLER;
 		} else if (control instanceof Joystick) {
@@ -68,8 +68,7 @@ public class Lift extends Component {
 			getPWM().set(power);
 			break;
 		case UNKNOWN:
-			DriverStation.reportError("STATE=RUNNING:lift_subsys_type_unknown",
-					true);
+			DriverStation.reportError("STATE=RUNNING:lift_subsys_type_unknown", true);
 			break;
 		}
 	}

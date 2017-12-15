@@ -33,7 +33,8 @@ public abstract class Subsystem extends ControlSafety {
 	/**
 	 * Runs a number of functions when required.
 	 * 
-	 * @param i The function.
+	 * @param i
+	 *          The function.
 	 */
 	public abstract void complete(byte i);
 
@@ -59,17 +60,18 @@ public abstract class Subsystem extends ControlSafety {
 
 	@Override
 	public void onStop() {
-		
+
 	}
-	
+
 	public void onTick() {
-		
+
 	}
 
 	/**
 	 * Sets the routine, if the user wants one.
 	 * 
-	 * @param r The routine to use.
+	 * @param r
+	 *          The routine to use.
 	 */
 	public void setRoutine(Routine r) {
 		this.routine = r;
