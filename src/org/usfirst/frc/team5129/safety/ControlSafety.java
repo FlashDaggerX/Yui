@@ -20,8 +20,6 @@ public abstract class ControlSafety {
 	 * Starts the system in the 'STOP' or 'STALL' state.
 	 */
 	public void start() {
-		if (state == MotorState.RUNNING)
-			return;
 		state = MotorState.RUNNING;
 	}
 
@@ -31,8 +29,6 @@ public abstract class ControlSafety {
 	 * @see ControlSafety#onStop()
 	 */
 	public void stop() {
-		if (state == MotorState.STOPPED)
-			return;
 		state = MotorState.STOPPED;
 		onStop();
 	}
