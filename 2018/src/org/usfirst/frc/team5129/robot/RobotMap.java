@@ -16,7 +16,8 @@ public class RobotMap {
 	 * Controllers: [0] Joystick; [1] XBoxController
 	 */
 	public static int[] motors, controllers;
-
+	
+	// TODO Fix ports
 	public RobotMap() {
 		motors = new int[] {
 				1,

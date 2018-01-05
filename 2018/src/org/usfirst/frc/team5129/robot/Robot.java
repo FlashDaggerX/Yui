@@ -16,8 +16,8 @@ public class Robot extends TimedRobot {
 	
 	OI buttonBinder;
 	HI hardwareBinder;
-	CI commandBinder;
 	SI subsystemBinder;
+	CI commandBinder;
 	
 	@Override
 	public void robotInit() {
@@ -25,11 +25,14 @@ public class Robot extends TimedRobot {
 		
 		m_chooser = new SendableChooser<>();
 		
+		// FIXME Be aware of null objects when initiating the interfaces. Order matters.
 		new RobotMap();
 		buttonBinder = new OI();
-		hardwareBinder = new HI(HI.DriveType.MECANUM);
-		commandBinder = new CI(this);
+		hardwareBinder = new HI(HI.DriveType.DIFFERENTIAL);
 		subsystemBinder = new SI(this);
+		commandBinder = new CI(this);
+		
+		getSubsystemBinder().getSubsystems()[1].getDefaultCommand().start();
 		
 		SmartDashboard.putData("Auto mode", m_chooser);
 	}
@@ -75,11 +78,12 @@ public class Robot extends TimedRobot {
 		return hardwareBinder;
 	}
 	
+	public SI getSubsystemBinder() {
+		return subsystemBinder;
+	}
+	
 	public CI getCommandBinder() {
 		return commandBinder;
 	}
 	
-	public SI getSubsystemBinder() {
-		return subsystemBinder;
-	}
 }
