@@ -8,6 +8,7 @@ import org.usfirst.frc.team5129.robot.interfaces.SI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,7 +22,7 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void robotInit() {
-		setPeriod(1.0);
+		setPeriod(0.02);
 		
 		m_chooser = new SendableChooser<>();
 		
@@ -32,7 +33,9 @@ public class Robot extends TimedRobot {
 		subsystemBinder = new SI(this);
 		commandBinder = new CI(this);
 		
-		getSubsystemBinder().getSubsystems()[1].getDefaultCommand().start();
+		for (Subsystem s : getSubsystemBinder().getSubsystems()) {
+			s.getDefaultCommand().start();
+		}
 		
 		SmartDashboard.putData("Auto mode", m_chooser);
 	}

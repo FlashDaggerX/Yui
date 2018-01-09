@@ -45,6 +45,11 @@ public class HI {
 				new PWMTalonSRX(RobotMap.motors[0]), new PWMTalonSRX(RobotMap.motors[2]),
 				new PWMTalonSRX(RobotMap.motors[1]), new PWMTalonSRX(RobotMap.motors[3])
 		};
+		
+		//FIXME Inverted for RALPH
+		pwm[0].setInverted(true);
+		pwm[1].setInverted(true);
+		
 		switch (type) {
 			// FIXME Fix port assignments accordingly
 			case MECANUM:

@@ -29,7 +29,11 @@ public class Move extends FDCommand {
 
 	@Override
 	public void execute() {
-		((DifferentialDrive) drive).arcadeDrive(stick.getX(), stick.getZ(), true);
+		if (stick.getZ() > 0) {
+			double x = stick.getRawAxis(0);
+			double y = stick.getRawAxis(1);
+			((DifferentialDrive) drive).arcadeDrive(x, y, true);
+		}
 	}
 
 	@Override

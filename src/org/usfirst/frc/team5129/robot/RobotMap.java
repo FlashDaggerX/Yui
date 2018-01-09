@@ -27,8 +27,8 @@ public class RobotMap {
 		};
 
 		controllers = new int[] {
-				8,
-				9
+				0,
+				1
 		};
 	}
 }

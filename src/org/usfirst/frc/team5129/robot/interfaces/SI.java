@@ -1,7 +1,6 @@
 package org.usfirst.frc.team5129.robot.interfaces;
 
 import org.usfirst.frc.team5129.robot.Robot;
-import org.usfirst.frc.team5129.subsystem.Camera;
 import org.usfirst.frc.team5129.subsystem.Drive;
 import org.usfirst.frc.team5129.subsystem.FDSubsystem;
 
@@ -21,7 +20,7 @@ public class SI {
 	public SI(Robot bot) {
 		this.bot = bot;
 
-		subs = new FDSubsystem[] { new Drive(bot), new Camera(bot) };
+		subs = new FDSubsystem[] { new Drive(bot) };
 	}
 
 	public FDSubsystem[] getSubsystems() {
