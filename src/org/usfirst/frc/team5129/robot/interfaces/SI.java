@@ -23,7 +23,20 @@ public class SI {
 		subs = new FDSubsystem[] { new Drive(bot) };
 	}
 
-	public FDSubsystem[] getSubsystems() {
+	/**
+	 * Subsystem list
+	 * @param i The subsystem
+	 * @return A subsystem.
+	 */
+	public FDSubsystem getSubsystem(int i) {
+		return subs[i];
+	}
+	
+	/**
+	 * Meant for convenience, shouldn't be used directly.
+	 * @return The subsystem array
+	 */
+	public FDSubsystem[] getAllSubsystems() {
 		return subs;
 	}
 

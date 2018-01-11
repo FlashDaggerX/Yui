@@ -12,7 +12,7 @@ public class Drive extends FDSubsystem {
 	
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(robot().getCommandBinder().getDriveCommands()[0]);
+		setDefaultCommand(robot().getCBinder().getDriveCommand(0));
 	}
 
 }

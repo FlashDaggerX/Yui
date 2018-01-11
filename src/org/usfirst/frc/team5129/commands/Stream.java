@@ -27,7 +27,7 @@ public class Stream extends FDCommand {
 	
 	@Override
 	public void initialize() {
-		camera = robot().getHardwareBinder().getCameraServer();
+		camera = robot().getHBinder().getCameraServer();
 		
 		vision = new Thread(new Runnable() {
 			@Override

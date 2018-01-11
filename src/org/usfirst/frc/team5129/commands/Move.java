@@ -14,28 +14,26 @@ public class Move extends FDCommand {
 	
 	public Move(Robot bot) {
 		super(bot);
-		requires(robot().getSubsystemBinder().getSubsystems()[0]);
+		requires(robot().getSBinder().getSubsystem(0));
 		
 		setName("Move");
 		setSubsystem("sDrive");
 	}
-
+	
 	@Override
 	public void initialize() {
-		drive = robot().getHardwareBinder().getDrive();
+		drive = robot().getHBinder().getDrive();
 		
-		stick = robot().getHardwareBinder().getStick();
+		stick = robot().getHBinder().getStick();
 	}
-
+	
 	@Override
 	public void execute() {
-		if (stick.getZ() > 0) {
-			double x = stick.getRawAxis(0);
-			double y = stick.getRawAxis(1);
-			((DifferentialDrive) drive).arcadeDrive(x, y, true);
-		}
+		double x = stick.getX();
+		double y = stick.getY();
+		((DifferentialDrive) drive).arcadeDrive(x, y, true);
 	}
-
+	
 	@Override
 	public void end() {
 		drive.stopMotor();
@@ -45,5 +43,5 @@ public class Move extends FDCommand {
 	protected boolean isFinished() {
 		return false;
 	}
-
+	
 }

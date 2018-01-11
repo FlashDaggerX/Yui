@@ -20,9 +20,13 @@ public class Robot extends TimedRobot {
 	SI subsystemBinder;
 	CI commandBinder;
 	
+	double period;
+	double selfTime;
+	
 	@Override
 	public void robotInit() {
-		setPeriod(0.02);
+		period = 0.02;
+		setPeriod(period);
 		
 		m_chooser = new SendableChooser<>();
 		
@@ -33,7 +37,7 @@ public class Robot extends TimedRobot {
 		subsystemBinder = new SI(this);
 		commandBinder = new CI(this);
 		
-		for (Subsystem s : getSubsystemBinder().getSubsystems()) {
+		for (Subsystem s : getSBinder().getAllSubsystems()) {
 			s.getDefaultCommand().start();
 		}
 		
@@ -41,10 +45,18 @@ public class Robot extends TimedRobot {
 	}
 	
 	@Override
+	public void robotPeriodic() {
+		setTimer(getTime() + period);
+	}
+	
+	@Override
 	public void disabledInit() {
-		for (Command c : getCommandBinder().getDriveCommands()) {
-			c.cancel();
+		for (int i = 0; i < getCBinder().getAllCommands().length; i++) {
+			for (int y = 0; y < getCBinder().getAllCommands()[i].length; y++) {
+				getCBinder().getAllCommands()[i][y].cancel();
+			}
 		}
+		resetTimer();
 	}
 	
 	@Override
@@ -54,7 +66,9 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void autonomousInit() {
-		
+		getCBinder().getDriveCommand(0).cancel();
+		resetTimer();
+		getCBinder().getDriveCommand(1).start();
 	}
 	
 	@Override
@@ -64,7 +78,9 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void teleopInit() {
-		
+		getCBinder().getDriveCommand(1).cancel();
+		resetTimer();
+		getCBinder().getDriveCommand(0).start();
 	}
 	
 	@Override
@@ -73,20 +89,33 @@ public class Robot extends TimedRobot {
 	}
 	
 	/* Robot Binders */
-	public OI getButtonBinder() {
+	public OI getBBinder() {
 		return buttonBinder;
 	}
 	
-	public HI getHardwareBinder() {
+	public HI getHBinder() {
 		return hardwareBinder;
 	}
 	
-	public SI getSubsystemBinder() {
+	public SI getSBinder() {
 		return subsystemBinder;
 	}
 	
-	public CI getCommandBinder() {
+	public CI getCBinder() {
 		return commandBinder;
+	}
+	
+	/* Timers */
+	public void setTimer(double t) {
+		selfTime = t;
+	}
+	
+	public void resetTimer() {
+		selfTime = 0;
+	}
+	
+	public double getTime() {
+		return selfTime;
 	}
 	
 }
