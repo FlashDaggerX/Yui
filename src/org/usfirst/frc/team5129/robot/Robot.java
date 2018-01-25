@@ -4,6 +4,7 @@ import org.usfirst.frc.team5129.robot.interfaces.CI;
 import org.usfirst.frc.team5129.robot.interfaces.HI;
 import org.usfirst.frc.team5129.robot.interfaces.OI;
 import org.usfirst.frc.team5129.robot.interfaces.SI;
+import org.usfirst.frc.team5129.robot.interfaces.SIG;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -33,7 +34,7 @@ public class Robot extends TimedRobot {
 		// FIXME Be aware of null objects when initiating the interfaces. Order matters.
 		new RobotMap();
 		buttonBinder = new OI();
-		hardwareBinder = new HI(HI.DriveType.DIFFERENTIAL);
+		hardwareBinder = new HI();
 		subsystemBinder = new SI(this);
 		commandBinder = new CI(this);
 		
@@ -69,6 +70,7 @@ public class Robot extends TimedRobot {
 		getCBinder().getDriveCommand(0).cancel();
 		resetTimer();
 		getCBinder().getDriveCommand(1).start();
+		getCBinder().getDriveCommand(1).sendSIG(SIG.SIG_1);
 	}
 	
 	@Override
