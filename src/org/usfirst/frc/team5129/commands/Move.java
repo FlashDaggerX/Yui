@@ -4,11 +4,10 @@ import org.usfirst.frc.team5129.robot.Robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 
 public class Move extends FDCommand {
 	
-	RobotDriveBase drive;
+	DifferentialDrive drive;
 	
 	Joystick stick;
 	
@@ -31,7 +30,7 @@ public class Move extends FDCommand {
 	public void execute() {
 		double x = stick.getX();
 		double y = stick.getY();
-		((DifferentialDrive) drive).arcadeDrive(x, y, true);
+		drive.arcadeDrive(x, y, true);
 	}
 	
 	@Override
