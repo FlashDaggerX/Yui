@@ -24,7 +24,7 @@ public class CI {
 		
 		cDrive = new FDCommand[] {
 				new Move(bot),
-				new Auto(bot, Auto.AutoType.T1)
+				new Auto(bot)
 		};
 		
 		cCamera = new FDCommand[] {
