@@ -6,6 +6,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMTalonSRX;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
@@ -20,6 +21,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 public class HI {
 	
 	DifferentialDrive drive;
+	
+	Spark claw;
 	
 	Joystick stick;
 	XboxController controller;
@@ -42,6 +45,8 @@ public class HI {
 		};
 		this.drive = new DifferentialDrive(grp[0], grp[1]);
 		
+		claw = new Spark(RobotMap.motors[4]);
+		
 		stick = new Joystick(RobotMap.controllers[0]);
 		controller = new XboxController(RobotMap.controllers[1]);
 		
@@ -50,6 +55,10 @@ public class HI {
 	
 	public DifferentialDrive getDrive() {
 		return drive;
+	}
+	
+	public Spark getClaw() {
+		return claw;
 	}
 
 	public Joystick getStick() {

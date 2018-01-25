@@ -11,7 +11,7 @@ public class RobotMap {
 	/**
 	 * Array data for ports.
 	 * <p>
-	 * Motors: [0] fLeft; [1] fRight; [2] rLeft; [3] rRight
+	 * Motors: [0] fLeft; [1] fRight; [2] rLeft; [3] rRight; [4] Claw
 	 * <p>
 	 * Controllers: [0] Joystick; [1] XBoxController
 	 */
@@ -23,7 +23,8 @@ public class RobotMap {
 				1,
 				2,
 				3,
-				4
+				4,
+				8
 		};
 
 		controllers = new int[] {
