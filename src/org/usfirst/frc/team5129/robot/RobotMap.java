@@ -6,7 +6,7 @@ package org.usfirst.frc.team5129.robot;
  * @author kyleg
  * 
  */
-public class OI {
+public class RobotMap {
 
 	/*
 	 * Ralph:
@@ -16,7 +16,7 @@ public class OI {
 	 * Joystick (0) XboxController (1)
 	 */
 
-	public OI() {
+	public RobotMap() {
 
 	}
 

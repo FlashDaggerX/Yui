@@ -1,6 +1,4 @@
-package org.usfirst.frc.team5129.subsystem.meta;
-
-import org.usfirst.frc.team5129.safety.ControlSafety;
+package org.usfirst.frc.team5129.meta;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -12,11 +10,11 @@ import edu.wpi.first.wpilibj.GenericHID;
  */
 public abstract class Subsystem extends ControlSafety {
 
-	private Routine routine; // The specified routine, if there's one.
+	Routine routine; // The specified routine, if there's one.
 
-	private GenericHID control;
+	GenericHID control;
 
-	private int tick;
+	int tick;
 
 	public Subsystem(GenericHID controller) {
 		this.control = controller;
@@ -34,16 +32,16 @@ public abstract class Subsystem extends ControlSafety {
 	 * Runs a number of functions when required.
 	 * 
 	 * @param i
-	 *          The function.
+	 *            The function.
 	 */
-	public abstract void complete(byte i);
+	public abstract void complete(int i);
 
 	/**
 	 * Used to compare
 	 * 
 	 * @return The subsystem's bit value.
 	 */
-	public abstract byte getID();
+	public abstract int getID();
 
 	public void tick() {
 		onTick();
@@ -58,12 +56,15 @@ public abstract class Subsystem extends ControlSafety {
 		return tick;
 	}
 
-	@Override
-	public void onStop() {
+	/**
+	 * Called when the subsystem is ticked.
+	 */
+	public void onTick() {
 
 	}
 
-	public void onTick() {
+	@Override
+	public void onStop() {
 
 	}
 
@@ -71,7 +72,7 @@ public abstract class Subsystem extends ControlSafety {
 	 * Sets the routine, if the user wants one.
 	 * 
 	 * @param r
-	 *          The routine to use.
+	 *            The routine to use.
 	 */
 	public void setRoutine(Routine r) {
 		this.routine = r;

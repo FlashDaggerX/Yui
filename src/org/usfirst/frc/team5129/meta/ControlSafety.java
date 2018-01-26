@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5129.safety;
+package org.usfirst.frc.team5129.meta;
 
 /**
  * Implements safety features in a subsystem.
@@ -6,6 +6,10 @@ package org.usfirst.frc.team5129.safety;
  * @author kyleg
  */
 public abstract class ControlSafety {
+
+	public enum MotorState {
+		STOPPED, RUNNING, AUTO;
+	}
 
 	private MotorState state = MotorState.STOPPED;
 

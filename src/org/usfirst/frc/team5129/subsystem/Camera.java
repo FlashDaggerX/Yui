@@ -4,8 +4,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5129.safety.MotorState;
-import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
+import org.usfirst.frc.team5129.meta.ControlSafety;
+import org.usfirst.frc.team5129.meta.Subsystem;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
@@ -24,10 +24,10 @@ public class Camera extends Subsystem {
 	}
 
 	@Override
-	public void complete(byte i) {
-		if (getMotorState() == MotorState.RUNNING) {
+	public void complete(int i) {
+		if (getMotorState() == ControlSafety.MotorState.RUNNING) {
 			switch (i) {
-			case 10:
+			case 0x0:
 				if (vision == null) {
 					// This is a code example from WPI's Java examples.
 					vision = new Thread(new Runnable() {
@@ -58,7 +58,7 @@ public class Camera extends Subsystem {
 							"STATE=STARTED:vision_subsys_already_created", false);
 				}
 				break;
-			case 20:
+			case 0x1:
 				if (vision.isAlive()) {
 					try {
 						Thread.sleep(1000);
@@ -81,8 +81,8 @@ public class Camera extends Subsystem {
 	}
 
 	@Override
-	public byte getID() {
-		return 20;
+	public int getID() {
+		return 0xa;
 	}
 
 }

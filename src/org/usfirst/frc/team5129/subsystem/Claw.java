@@ -5,16 +5,18 @@ import org.usfirst.frc.team5129.meta.Routine;
 import org.usfirst.frc.team5129.meta.Subsystem;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.Spark;
 
-public class Drive extends Subsystem {
+public class Claw extends Subsystem {
 	
-	DifferentialDrive drive;
+	Spark claw;
 	
-	public Drive(GenericHID controller, DifferentialDrive drive) {
+	double threshold = 0.5;
+	
+	public Claw(GenericHID controller, Spark claw) {
 		super(controller);
 		
-		this.drive = drive;
+		this.claw = claw;
 	}
 
 	@Override
@@ -22,18 +24,24 @@ public class Drive extends Subsystem {
 		if (getMotorState() == ControlSafety.MotorState.RUNNING) {
 			switch(i) {
 			case 0x0:
-				double x = getController().getX();
-				double y = getController().getY();
-				drive.arcadeDrive(x, y, true);
+				// TODO Come up with a controller solution.
+				break;
+			case 0x1:
+				claw.set(threshold);
+				break;
+			case 0x2:
+				claw.set(-threshold);
 				break;
 			case 0x1a:
 				setRoutine(new Routine() {
-					
+
 					@Override
 					public void doRoutine() {
-						if (getTicks() == 2.00) {
-							drive.arcadeDrive(1, 0);
-						} else if (getTicks() == 4.00) {
+						if (getTicks() == 0.25) {
+							complete(0x1);
+						} else if (getTicks() == 0.75) {
+							complete(0x2);
+						} else if (getTicks() == 1.25) {
 							stop();
 						}
 					}
@@ -44,12 +52,12 @@ public class Drive extends Subsystem {
 	
 	@Override
 	public void onStop() {
-		drive.stopMotor();
+		claw.stopMotor();
 	}
 
 	@Override
 	public int getID() {
-		return 0xb;
+		return 0xc;
 	}
 
 }

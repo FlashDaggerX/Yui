@@ -1,113 +1,105 @@
 package org.usfirst.frc.team5129.robot;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
+import org.usfirst.frc.team5129.meta.Subsystem;
 import org.usfirst.frc.team5129.subsystem.Camera;
-import org.usfirst.frc.team5129.subsystem.Collect;
+import org.usfirst.frc.team5129.subsystem.Claw;
 import org.usfirst.frc.team5129.subsystem.Drive;
-import org.usfirst.frc.team5129.subsystem.Lift;
-import org.usfirst.frc.team5129.subsystem.meta.Routine;
-import org.usfirst.frc.team5129.subsystem.meta.Subsystem;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 
-	private RobotDrive drive;
+	DifferentialDrive drive;
 
-	private Spark lift;
-	private Spark collect;
+	Spark claw;
 
-	private Joystick stick;
-	private XboxController controller;
+	Joystick stick;
+	XboxController controller;
 
-	private Subsystem[] subs;
+	Subsystem[] subs;
 
 	@Override
 	public void robotInit() {
+		setPeriod(0.05);
 
-		OI oi = new OI();
+		init(false);
 
-		drive = new RobotDrive(oi.motors[0], oi.motors[1], oi.motors[2],
-				oi.motors[3]);
+		subs[0].complete(0x0);
 
-		lift = new Spark(oi.components[0]);
-		collect = new Spark(oi.components[1]);
+		subs[1].complete(0x1a);
 
-		stick = new Joystick(oi.controllers[0]);
-		controller = new XboxController(oi.controllers[1]);
+		subs[2].complete(0x1a);
+	}
 
-		subs = new Subsystem[] { new Drive(stick, drive), new Camera(),
-				new Lift(controller, lift), new Collect(controller, collect) };
-
-		subs[0].complete((byte) 50);
-		subs[1].start();
-		subs[1].complete((byte) 10);
-		
-		new Timer().schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				for (Subsystem s : subs) {
-					s.tick();
-				}
-			}
-		}, 0, 1000);
+	@Override
+	public void robotPeriodic() {
+		for (Subsystem s : subs) {
+			s.tick();
+		}
 	}
 
 	@Override
 	public void autonomousInit() {
-		subs[0].start();
-		subs[0].resetTicks();
-		subs[0].setRoutine(new Routine() {
-			@Override
-			public void doRoutine() {
-				if (subs[0].getTicks() == 3) {
-					subs[0].complete((byte) 20);
-				}
-				if (subs[0].getTicks() == 5) {
-					subs[0].stop();
-				}
-			}
-
-		});
+		for (Subsystem s : subs) {
+			s.resetTicks();
+			s.start();
+		}
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		while (isEnabled()) {
-			subs[0].getRoutine().doRoutine();
+			subs[1].getRoutine().doRoutine();
 		}
 	}
 
 	@Override
 	public void teleopInit() {
 		for (Subsystem s : subs) {
+			s.resetTicks();
 			s.start();
 		}
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		while (isOperatorControl() && isEnabled()) {
-			for (Subsystem s : subs) {
-				if (s.getID() != (byte) 20)
-					s.complete((byte) 10);
-			}
-		}
+		
 	}
 
 	@Override
 	public void disabledInit() {
 		for (Subsystem s : subs) {
-			s.resetTicks();
-			if (s.getID() != (byte) 20)
-				s.stop();
+			s.stop();
 		}
+	}
+
+	void init(boolean invert) {
+		RobotMap oi = new RobotMap();
+
+		final PWMTalonSRX[] pwm = { new PWMTalonSRX(oi.motors[0]), new PWMTalonSRX(oi.motors[1]),
+				new PWMTalonSRX(oi.motors[2]), new PWMTalonSRX(oi.motors[3]) };
+
+		final SpeedControllerGroup[] grp = { new SpeedControllerGroup(pwm[0], pwm[1]),
+				new SpeedControllerGroup(pwm[2], pwm[3]) };
+
+		if (invert) {
+			grp[0].setInverted(true);
+			grp[1].setInverted(true);
+		}
+
+		drive = new DifferentialDrive(grp[0], grp[1]);
+
+		claw = new Spark(oi.components[0]);
+
+		stick = new Joystick(oi.controllers[0]);
+		controller = new XboxController(oi.controllers[1]);
+
+		subs = new Subsystem[] { new Camera(), new Drive(stick, drive), new Claw(controller, claw) };
 	}
 }

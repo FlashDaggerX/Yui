@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5129.subsystem.meta;
+package org.usfirst.frc.team5129.meta;
 
 /**
  * Describes a routine in a Subsystem.
@@ -12,8 +12,8 @@ public interface Routine {
 	/**
 	 * Executes different custom routines during scheduling.
 	 * <p>
-	 * For example, in autonomous. Or in live subsystems, when a custom
-	 * instruction needs to be run.
+	 * For example, in autonomous. Or in live subsystems, when a custom instruction
+	 * needs to be run.
 	 */
 	public void doRoutine();
 }
