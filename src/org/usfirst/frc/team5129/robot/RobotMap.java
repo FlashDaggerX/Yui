@@ -14,6 +14,12 @@ public class RobotMap {
 	 * Drive (1,0,2,3) Inverted Lift (8) Collect (9)
 	 * 
 	 * Joystick (0) XboxController (1)
+	 * 
+	 * 
+	 * 
+	 * Yui:
+	 * 
+	 * Drive (2,3,1,0) Inverted Right
 	 */
 
 	public RobotMap() {
@@ -25,14 +31,25 @@ public class RobotMap {
 	 * 
 	 * frontLeft, rearLeft, frontRight, rearRight
 	 */
-	public int[] motors = { 1, 0, 2, 3 };
+	//	 * orig 1, 0, 2, 3
+	public int[] motors = { 2, 3, 1, 0 };
+	
+	/**
+	 * Describes motor inverts:
+	 * 
+	 * Left, Right
+	 * 
+	 * @see RobotMap#motors
+	 */
+	public boolean[] invert = { false, true };
+	
 
 	/**
 	 * Describes other components. They go in this order:
 	 * 
-	 * Lift (SPARK Controller), Collect (SPARK Controller)
+	 * Claw, Arm, Wench, Scissor 
 	 */
-	public int[] components = { 8, 9 };
+	public int[] components = { 9, 8, 7, 6 };
 
 	/**
 	 * Describes any controller ports. They go in this order:
