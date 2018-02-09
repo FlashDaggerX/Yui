@@ -1,6 +1,5 @@
 package org.usfirst.frc.team5129.subsystem;
 
-import org.usfirst.frc.team5129.meta.ControlSafety;
 import org.usfirst.frc.team5129.meta.Routine;
 import org.usfirst.frc.team5129.meta.Subsystem;
 
@@ -19,7 +18,7 @@ public class Drive extends Subsystem {
 
 	@Override
 	public void complete(int i) {
-		if (getMotorState() == ControlSafety.MotorState.RUNNING) {
+		if (getMotorState() == MotorState.RUNNING) {
 			switch(i) {
 			case 0x0:
 				double x = getController().getX();
@@ -32,7 +31,7 @@ public class Drive extends Subsystem {
 					@Override
 					public void doRoutine() {
 						if (getTicks() == 2.00) {
-							drive.arcadeDrive(1, 0);
+							drive.arcadeDrive(0.5, 0);
 						} else if (getTicks() == 4.00) {
 							stop();
 						}

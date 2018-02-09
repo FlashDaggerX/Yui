@@ -1,9 +1,12 @@
 package org.usfirst.frc.team5129.robot;
 
 import org.usfirst.frc.team5129.meta.Subsystem;
+import org.usfirst.frc.team5129.subsystem.Arm;
 import org.usfirst.frc.team5129.subsystem.Camera;
 import org.usfirst.frc.team5129.subsystem.Claw;
 import org.usfirst.frc.team5129.subsystem.Drive;
+import org.usfirst.frc.team5129.subsystem.Scissor;
+import org.usfirst.frc.team5129.subsystem.Wench;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMTalonSRX;
@@ -17,7 +20,7 @@ public class Robot extends TimedRobot {
 
 	DifferentialDrive drive;
 
-	Spark claw;
+	Spark claw, arm, scissor;
 
 	Joystick stick;
 	XboxController controller;
@@ -28,7 +31,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		setPeriod(0.05);
 
-		init(false);
+		init();
 
 		subs[0].complete(0x0);
 
@@ -69,7 +72,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		
+		for (Subsystem s : subs) {
+			if (s.getID() != 0xa && s.getID() != 0xe)
+				s.complete(0x0);
+		}
 	}
 
 	@Override
@@ -79,7 +85,7 @@ public class Robot extends TimedRobot {
 		}
 	}
 
-	void init(boolean invert) {
+	void init() {
 		RobotMap oi = new RobotMap();
 
 		final PWMTalonSRX[] pwm = { new PWMTalonSRX(oi.motors[0]), new PWMTalonSRX(oi.motors[1]),
@@ -88,18 +94,19 @@ public class Robot extends TimedRobot {
 		final SpeedControllerGroup[] grp = { new SpeedControllerGroup(pwm[0], pwm[1]),
 				new SpeedControllerGroup(pwm[2], pwm[3]) };
 
-		if (invert) {
-			grp[0].setInverted(true);
-			grp[1].setInverted(true);
-		}
+		grp[0].setInverted(oi.invert[0]);
+		grp[1].setInverted(oi.invert[1]);
 
 		drive = new DifferentialDrive(grp[0], grp[1]);
 
 		claw = new Spark(oi.components[0]);
+		arm = new Spark(oi.components[1]);
+		scissor = new Spark(oi.components[3]);
 
 		stick = new Joystick(oi.controllers[0]);
 		controller = new XboxController(oi.controllers[1]);
 
-		subs = new Subsystem[] { new Camera(), new Drive(stick, drive), new Claw(controller, claw) };
+		subs = new Subsystem[] { new Camera(), new Drive(stick, drive), new Claw(controller, claw),
+				new Arm(controller, arm), new Wench(controller), new Scissor(controller, scissor) };
 	}
 }

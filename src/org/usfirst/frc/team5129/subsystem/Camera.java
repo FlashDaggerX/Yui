@@ -4,7 +4,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5129.meta.ControlSafety;
 import org.usfirst.frc.team5129.meta.Subsystem;
 
 import edu.wpi.cscore.CvSink;
@@ -25,7 +24,7 @@ public class Camera extends Subsystem {
 
 	@Override
 	public void complete(int i) {
-		if (getMotorState() == ControlSafety.MotorState.RUNNING) {
+		if (getMotorState() == MotorState.RUNNING) {
 			switch (i) {
 			case 0x0:
 				if (vision == null) {
