@@ -8,7 +8,13 @@ package org.usfirst.frc.team5129.meta;
 public abstract class ControlSafety {
 
 	public enum MotorState {
-		STOPPED, RUNNING, AUTO;
+		STOPPED(0), RUNNING(1), AUTO(2);
+		
+		public final int value;
+		
+		MotorState(int value) {
+			this.value = value;
+		}
 	}
 
 	private MotorState state = MotorState.STOPPED;

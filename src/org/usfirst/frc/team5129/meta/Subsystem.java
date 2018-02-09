@@ -8,14 +8,12 @@ import edu.wpi.first.wpilibj.GenericHID;
  * 
  * @author kyleg
  */
-public abstract class Subsystem extends ControlSafety {
+public abstract class Subsystem extends TimeController {
 
 	Routine routine; // The specified routine, if there's one.
 
 	GenericHID control;
-
-	int tick;
-
+	
 	public Subsystem(GenericHID controller) {
 		this.control = controller;
 
@@ -26,6 +24,7 @@ public abstract class Subsystem extends ControlSafety {
 				DriverStation.reportWarning("subsys_overload_routine", false);
 			}
 		};
+		
 	}
 
 	/**
@@ -42,26 +41,6 @@ public abstract class Subsystem extends ControlSafety {
 	 * @return The subsystem's bit value.
 	 */
 	public abstract int getID();
-
-	public void tick() {
-		onTick();
-		tick++;
-	}
-
-	public void resetTicks() {
-		tick = 0;
-	}
-
-	public int getTicks() {
-		return tick;
-	}
-
-	/**
-	 * Called when the subsystem is ticked.
-	 */
-	public void onTick() {
-
-	}
 
 	@Override
 	public void onStop() {
