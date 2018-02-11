@@ -9,12 +9,13 @@ public class Main {
 		INIT, DISABLED, AUTO, TELEOP, PRACTICE, TEST;
 	}
 	
-	private State s = State.INIT;
-	private boolean isEnabled;
+	State s = State.INIT;
+	boolean isEnabled;
 	
-	private Timer t;
+	Timer t;
+	int period;
 	
-	private static Main robot;
+	static Main robot;
 	
 	public static void main(String[] args) {
 		robot = new Robot();
@@ -32,38 +33,9 @@ public class Main {
 		
 		robotInit();
 		
-		t.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				if (isEnabled) {
-					switch(s) {
-						case AUTO:
-							autonomousPeriodic();
-							break;
-						case DISABLED:
-							disabledPeriodic();
-							break;
-						case PRACTICE:
-							practicePeriodic();
-							break;
-						case TELEOP:
-							teleopPeriodic();
-							break;
-						case TEST:
-							testPeriodic();
-							break;
-						default:
-							System.out.println("er_unknown_state_terminating");
-							kill();
-							break;
-					}
-				}
-			}
-			
-		}, 0, 1000);
+		setPeriod(1000);
 		
-		s = State.DISABLED;
+		s = State.DISABLED; // Allows the swap() method to be used.
 		disabledInit();
 	}
 	
@@ -155,5 +127,44 @@ public class Main {
 		} else {
 			System.out.println("er_robot_cant_kill_while_init");
 		}
+	}
+	
+	public void setPeriod(int period) {
+		this.period = period;
+		
+		t.cancel();
+		t.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				if (isEnabled) {
+					switch(s) {
+						case AUTO:
+							autonomousPeriodic();
+							break;
+						case DISABLED:
+							disabledPeriodic();
+							break;
+						case PRACTICE:
+							practicePeriodic();
+							break;
+						case TELEOP:
+							teleopPeriodic();
+							break;
+						case TEST:
+							testPeriodic();
+							break;
+						default:
+							System.out.println("er_unknown_state_terminating");
+							kill();
+							break;
+					}
+				}
+			}
+		}, 0, getPeriod());
+	}
+	
+	public int getPeriod() {
+		return period;
 	}
 }

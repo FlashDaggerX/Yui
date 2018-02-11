@@ -1,8 +1,8 @@
 package com.github.flashdaggerx.subsystem;
 
 import com.github.flashdaggerx.safety.MotorState;
-import com.github.flashdaggerx.subsystem.meta.Subsystem;
-import com.github.flashdaggerx.subsystem.meta.mock.GenericHID;
+import com.github.flashdaggerx.meta.Subsystem;
+import com.github.flashdaggerx.meta.mock.GenericHID;
 
 public class Drive extends Subsystem {
 
