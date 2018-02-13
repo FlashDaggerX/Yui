@@ -31,7 +31,7 @@ public class Claw extends Subsystem {
 						System.out.println("Out");
 						claw.set(-0.5);
 						decDistance();
-					} else if (getController().getRawButton(8)) {
+					} else if (getController().getRawButton(7)) {
 						claw.stopMotor();
 						setDistance(0);
 					} else {
