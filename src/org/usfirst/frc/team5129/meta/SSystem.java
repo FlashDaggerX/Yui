@@ -1,5 +1,10 @@
 package org.usfirst.frc.team5129.meta;
 
+/**
+ * Subsystem base.
+ * @author kyleg
+ *
+ */
 public interface SSystem {
 	
 	/**

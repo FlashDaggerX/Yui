@@ -8,6 +8,11 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
 
+/**
+ * Scissor lift, used to lift the end of the {@link Winch} to the bar.
+ * @author kyleg
+ *
+ */
 public class Scissor extends Component implements SSystem {
 	Spark scissor;
 	

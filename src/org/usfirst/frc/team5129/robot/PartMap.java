@@ -2,6 +2,11 @@ package org.usfirst.frc.team5129.robot;
 
 import java.util.HashMap;
 
+/**
+ * Ports.
+ * @author kyleg
+ *
+ */
 public class PartMap {
 	
 	HashMap<String, Integer> ports;

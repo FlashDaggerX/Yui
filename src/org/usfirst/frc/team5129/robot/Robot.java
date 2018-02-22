@@ -18,12 +18,18 @@ import org.usfirst.frc.team5129.sys.Drive;
 import org.usfirst.frc.team5129.sys.Scissor;
 import org.usfirst.frc.team5129.sys.Winch;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * Main Robot class.
+ * @author kyleg
+ *
+ */
 public class Robot extends TimedRobot {
 	int time;
 	
@@ -36,6 +42,7 @@ public class Robot extends TimedRobot {
 	int auto;
 	
 	DashChoice choice;
+	PullAutonomous pull;
 	
 	@Override
 	public void robotInit() {
@@ -73,9 +80,15 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void autonomousInit() {
-		if (choice.getSelected().equals("Default Auto")) {
-			auto = 0x0a;
-		}
+		auto = pull.findPlate();
+		
+		System.out.printf(
+				"=== Autonomous ===\n"
+				+ "Pos: %d; Instruction: %s\n"
+				+ "Decided Auto: %d\n",
+				pull.getPlace(), pull.getPlate().toString(), auto);
+		
+		pull = null; // Autonomous pull goes above this.
 	}
 	
 	@Override
@@ -87,6 +100,11 @@ public class Robot extends TimedRobot {
 	}
 	
 	@Override
+	public void teleopInit() {
+		
+	}
+	
+	@Override
 	public void teleopPeriodic() {
 		for (SSystem s : sys) {
 			if (!s.getName().equalsIgnoreCase("camera"))
@@ -94,8 +112,34 @@ public class Robot extends TimedRobot {
 		}
 	}
 	
+	@Override
+	public void disabledInit() {
+		pull = new PullAutonomous(this);
+	}
+	
+	@Override
+	public void disabledPeriodic() {
+		pull.pullWhileStarting();
+		/*
+		 * When the plate assignment is pulled, find the
+		 * autonomous routine to use.
+		 */
+	}
+	
+	public int getAuto() {
+		return auto;
+	}
+	
 	public int getTime() {
 		return time;
+	}
+	
+	public DashChoice dash() {
+		return choice;
+	}
+	
+	public PullAutonomous pull() {
+		return pull;
 	}
 	
 	public PartMap pmap() {
@@ -103,6 +147,11 @@ public class Robot extends TimedRobot {
 	}
 }
 
+/**
+ * A simplified version of the Dashboard Chooser.
+ * @author kyleg
+ *
+ */
 class DashChoice {
 	
 	SendableChooser<Object> current;
@@ -164,4 +213,75 @@ class DashChoice {
 		SmartDashboard.putData(current);
 	}
 	
+}
+
+/**
+ * Pulls autonomous information while disabled. Set to null when
+ * autonomous turns on.
+ * <p>
+ * @see <a href="https://wpilib.screenstepslive.com/s/currentCS/m/getting_started/l/826278-2018-game-data-details">2018 Game Data</a>
+ * @author kyleg
+ */
+class PullAutonomous {
+	Robot bot;
+	
+	int place;
+	char[] auto;
+	
+	DriverStation ds = DriverStation.getInstance();
+	
+	PullAutonomous(Robot bot) {
+		this.bot = bot;
+		this.auto = new char[] {'N', 'N', 'N'};
+	}
+	
+	/**
+	 * Called while disabled to pull plate assignments.
+	 */
+	public void pullWhileStarting() {
+		String pull = "";
+		while (bot.isDisabled() && ds.isFMSAttached()) {
+			if (ds.getGameSpecificMessage() != null) {
+				place = ds.getLocation();
+				pull = ds.getGameSpecificMessage();
+				break;
+			}
+		}
+		auto = pull.toCharArray();
+	}
+	
+	public int findPlate() {
+		int auto = 0x0a; // Defaults to Blue 1, Left
+		char side = getPlate()[0];
+		switch(place) { // Decides the autonomous to run based on place.
+		// TODO Fix autonomous
+		case 1:
+			if (side == 'L')
+				auto = 0x0a;
+			else
+				auto = 0x1a;
+			break;
+		case 2:
+			if (side == 'L')
+				auto = 0x0a;
+			else
+				auto = 0x1a;
+			break;
+		case 3:
+			if (side == 'L')
+				auto = 0x0a;
+			else
+				auto = 0x1a;
+			break;
+		}
+		return auto;
+	}
+	
+	public int getPlace() {
+		return place;
+	}
+	
+	public char[] getPlate() {
+		return auto;
+	}
 }
