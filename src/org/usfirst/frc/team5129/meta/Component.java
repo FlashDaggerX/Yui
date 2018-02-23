@@ -1,26 +1,24 @@
 package org.usfirst.frc.team5129.meta;
 
-import org.usfirst.frc.team5129.robot.Robot;
-
 import edu.wpi.first.wpilibj.XboxController;
+import org.usfirst.frc.team5129.robot.Robot;
 
 /**
  * A component of the bot, controlled by the Xbox Controller, aside
  * the driver.
- * 
- * @author kyleg
  *
+ * @author kyleg
  */
 public abstract class Component extends Piece {
-	XboxController ct;
-	
-	public Component(Robot bot, XboxController ct) {
-		super(bot);
-		this.ct = ct;
-	}
-	
-	protected XboxController getCTRL() {
-		return ct;
-	}
+    private final XboxController ct;
+
+    protected Component(Robot bot, XboxController ct) {
+        super(bot);
+        this.ct = ct;
+    }
+
+    protected XboxController getCTRL() {
+        return ct;
+    }
 
 }
