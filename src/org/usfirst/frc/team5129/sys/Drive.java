@@ -40,8 +40,8 @@ public class Drive extends Handled implements SSystem {
     public void execute(int i) {
         switch (i) {
             case 0x0: // Default
-                double x = getCTRL().getX();
-                double y = getCTRL().getY();
+                double x = createDeadZone(getCTRL().getX(), 0.2);
+                double y = createDeadZone(getCTRL().getY(), 0.2);
                 drive.arcadeDrive(x, y, true);
                 break;
             case 0x1: // Left
@@ -94,6 +94,37 @@ public class Drive extends Handled implements SSystem {
     @Override
     public String getName() {
         return "drive";
+    }
+
+    /**
+     * Creates a deadzone, but without clipping the lower values.
+     * turns this
+     * |--1--2--3--4--5--|
+     * into this
+     * ______|-1-2-3-4-5-|
+     * @param input
+     * @param deadZoneSize
+     * @return adjusted_input
+     *
+     * @author owatonnarobotics
+     * @see <a href=https://github.com/owatonnarobotics/XboxController/blob/master/XboxController.java>Custom Xbox Class</a>
+     */
+    private double createDeadZone(double input, double deadZoneSize) {
+        final double negative;
+        double deadZoneSizeClamp = deadZoneSize;
+        double adjusted;
+
+        if (deadZoneSizeClamp < 0 || deadZoneSizeClamp >= 1) {
+            deadZoneSizeClamp = 0;  // Prevent any weird errors
+        }
+
+        negative = input < 0 ? -1 : 1;
+
+        adjusted = Math.abs(input) - deadZoneSizeClamp;  // Subtract the deadzone from the magnitude
+        adjusted = adjusted < 0 ? 0 : adjusted;          // if the new input is negative, make it zero
+        adjusted = adjusted / (1 - deadZoneSizeClamp);   // Adjust the adjustment so it can max at 1
+
+        return negative * adjusted;
     }
 
 }
