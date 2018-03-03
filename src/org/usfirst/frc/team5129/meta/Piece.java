@@ -1,6 +1,6 @@
 package org.usfirst.frc.team5129.meta;
 
-import org.usfirst.frc.team5129.robot.Robot;
+import org.usfirst.frc.team5129.Robot;
 
 /**
  * Base for drive-team controlled parts.
@@ -15,6 +15,10 @@ public abstract class Piece {
         this.bot = bot;
     }
 
+    /**
+     *
+     * @return The robot instance.
+     */
     protected Robot robot() {
         return bot;
     }

@@ -1,7 +1,7 @@
 package org.usfirst.frc.team5129.meta;
 
 import edu.wpi.first.wpilibj.XboxController;
-import org.usfirst.frc.team5129.robot.Robot;
+import org.usfirst.frc.team5129.Robot;
 
 /**
  * A component of the bot, controlled by the Xbox Controller, aside

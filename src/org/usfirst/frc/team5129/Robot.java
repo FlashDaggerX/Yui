@@ -1,11 +1,4 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-package org.usfirst.frc.team5129.robot;
+package org.usfirst.frc.team5129;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -17,7 +10,7 @@ import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
 import org.usfirst.frc.team5129.sys.*;
 
-import java.lang.reflect.Array;
+import static org.usfirst.frc.team5129.meta.SAuto.*;
 
 /**
  * Main Robot class.
@@ -63,9 +56,10 @@ public class Robot extends TimedRobot {
             s.init();
         }
 
-        choice = new DashChoice(sys);
-        choice.reset("drive");
+        choice = new DashChoice();
         choice.addChoice("enable_auto", "Use Auto");
+        choice.addChoice("default_auto", "Default Auto");
+        choice.addChoice("disable_auto", "Disable Auto");
         choice.push();
     }
 
@@ -84,7 +78,11 @@ public class Robot extends TimedRobot {
                     + "Pos: %d; Instruction: %s\n"
                     + "Decided Auto: %d\n",
                 pull.getPlace(), pull.getPlate().toString(), auto);
-        } else {
+        } else if (choice.getSelected() == "Default Auto") {
+            auto = DEFAULT;
+            System.out.println("=== Autonomous has been set to default ===");
+        } else if (choice.getSelected() == "Disable Auto") {
+            auto = null;
             System.out.println("=== Autonomous has been disabled ===");
         }
 
@@ -109,6 +107,7 @@ public class Robot extends TimedRobot {
         for (SSystem s : sys) {
             if (!s.getName().equalsIgnoreCase("camera"))
                 s.execute(0x0);
+
         }
     }
 
@@ -151,31 +150,11 @@ public class Robot extends TimedRobot {
  */
 class DashChoice {
 
-    private SendableChooser<Object> current;
-    private final SendableChooser<Object>[] m_chooser;
+    private SendableChooser<String> m_chooser;
 
-    @SuppressWarnings("unchecked")
-    DashChoice(SSystem[] systems) {
-        current = new SendableChooser<>();
-        m_chooser = (SendableChooser<Object>[]) Array.newInstance(current.getClass(), systems.length);
-        for (int i = 0; i < m_chooser.length; i++) {
-            m_chooser[i] = new SendableChooser<>();
-            m_chooser[i].setName(systems[i].getName());
-        }
-    }
-
-    /**
-     * Switches to a sendable.
-     *
-     * @param name Name of the sendable
-     */
-    public void reset(String name) {
-        for (SendableChooser<Object> g : m_chooser) {
-            if (g.getName().equalsIgnoreCase(name)) {
-                current = g;
-                break;
-            }
-        }
+    DashChoice() {
+        m_chooser = new SendableChooser<>();
+        m_chooser.setName("Choices");
     }
 
     /**
@@ -184,22 +163,22 @@ class DashChoice {
      * @param name   The name of the new choice
      * @param action The possible action, or a display object (can be a String)
      */
-    public void addChoice(String name, Object action) {
-        current.addObject(name, action);
+    public void addChoice(String name, String action) {
+        m_chooser.addObject(name, action);
     }
 
     /**
      * @return The selected object for the current sendable.
      */
-    public Object getSelected() {
-        return current.getSelected();
+    public String getSelected() {
+        return m_chooser.getSelected();
     }
 
     /**
      * Push changes to the dashboard.
      */
     public void push() {
-        SmartDashboard.putData(current);
+        SmartDashboard.putData(m_chooser.getName(), m_chooser);
     }
 
 }
@@ -246,27 +225,27 @@ class PullAutonomous {
      * @return The suggested routine
      */
     public SAuto findPlate() {
-        SAuto auto = SAuto.POS1_LEFT; // Defaults to Pos 1, Left
+        SAuto auto = POS1_LEFT; // Defaults to Pos 1, Left
         char side = getPlate()[0];
         switch (place) { // Decides the autonomous to run based on place.
             // TODO Fix autonomous
             case 1:
                 if (side == 'L')
-                    auto = SAuto.POS1_LEFT; // Pos 1 Left
+                    auto = POS1_LEFT; // Pos 1 Left
                 else
-                    auto = SAuto.POS1_RIGHT;
+                    auto = POS1_RIGHT;
                 break;
             case 2:
                 if (side == 'L')
-                    auto = SAuto.POS2_LEFT;
+                    auto = POS2_LEFT;
                 else
-                    auto = SAuto.POS2_RIGHT;
+                    auto = POS2_RIGHT;
                 break;
             case 3:
                 if (side == 'L')
-                    auto = SAuto.POS3_LEFT;
+                    auto = POS3_LEFT;
                 else
-                    auto = SAuto.POS3_RIGHT;
+                    auto = POS3_RIGHT;
                 break;
         }
         return auto;

@@ -4,13 +4,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Handled;
 import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
-import org.usfirst.frc.team5129.robot.Robot;
 
 public class Drive extends Handled implements SSystem {
-
     private DifferentialDrive drive;
 
     public Drive(Robot bot, Joystick st) {
@@ -40,8 +39,13 @@ public class Drive extends Handled implements SSystem {
     public void execute(int i) {
         switch (i) {
             case 0x0: // Default
-                double x = createDeadZone(getCTRL().getX(), 0.2);
-                double y = createDeadZone(getCTRL().getY(), 0.2);
+                double deadzone;
+                if (getCTRL().getTrigger())
+                    deadzone = 0.4;
+                else
+                    deadzone = 0.2;
+                double x = createDeadZone(getCTRL().getX(), deadzone);
+                double y = createDeadZone(getCTRL().getY(), deadzone);
                 drive.arcadeDrive(x, y, true);
                 break;
             case 0x1: // Left
@@ -64,24 +68,64 @@ public class Drive extends Handled implements SSystem {
         double time = robot().getTime();
         switch(i) {
             case POS1_LEFT:
-                if (time == 0.10)
+                if (time < 0.20)
                     execute(0x3);
+
                 else if (time == 5)
                     execute(0x2);
+
                 else if (time == 6)
                     execute(0x3);
+
                 else if (time == 8)
                     disable();
                 break;
             case POS1_RIGHT:
+                if (time < 0.20)
+                    execute(0x3);
+
+                else if (time == 2)
+                    execute(0x2);
+
+                else if (time == 2.5)
+                    execute(0x3);
+
+                else if (time == 8)
+                    execute(0x1);
+
+                else if (time == 8.5)
+                    execute(0x3);
+
+                else if (time == 11)
+                    execute(0x1);
+
+                else if (time == 11.5)
+                    execute(0x3);
+
+                else if (time == 12)
+                    disable();
                 break;
             case POS2_LEFT:
+                if (time < 0.20)
+                    execute(0x3);
+
+                else if (time == 2)
+                    execute(0x1);
+
+                else if (time == 2.5)
+                    execute(0x3);
                 break;
             case POS2_RIGHT:
                 break;
             case POS3_LEFT:
                 break;
             case POS3_RIGHT:
+                break;
+            case DEFAULT:
+                if (time == 0.10)
+                    execute(0x3);
+                else if (time == 5)
+                    disable();
                 break;
         }
     }

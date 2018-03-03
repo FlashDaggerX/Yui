@@ -3,10 +3,10 @@ package org.usfirst.frc.team5129.sys;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
+import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Component;
 import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
-import org.usfirst.frc.team5129.robot.Robot;
 
 /**
  * Scissor lift, used to lift the end of the {@link Winch} to the bar.

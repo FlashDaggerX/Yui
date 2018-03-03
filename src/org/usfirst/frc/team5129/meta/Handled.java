@@ -1,7 +1,7 @@
 package org.usfirst.frc.team5129.meta;
 
 import edu.wpi.first.wpilibj.Joystick;
-import org.usfirst.frc.team5129.robot.Robot;
+import org.usfirst.frc.team5129.Robot;
 
 /**
  * Components handled by the driver.

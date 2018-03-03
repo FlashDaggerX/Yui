@@ -2,10 +2,10 @@ package org.usfirst.frc.team5129.sys;
 
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
+import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Component;
 import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
-import org.usfirst.frc.team5129.robot.Robot;
 
 public class Arm extends Component implements SSystem {
     private Spark arm;
@@ -32,10 +32,10 @@ public class Arm extends Component implements SSystem {
                     disable();
                 }
                 break;
-            case 0x1:
+            case 0x1: // Up
                 arm.set(-1);
                 break;
-            case 0x2:
+            case 0x2: // Down
                 arm.set(0.6);
                 break;
         }
@@ -52,6 +52,7 @@ public class Arm extends Component implements SSystem {
                     disable();
                 break;
             case POS1_RIGHT:
+                if (time == 0) // Fix please
                 break;
             case POS2_LEFT:
                 break;
