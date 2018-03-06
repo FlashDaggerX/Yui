@@ -10,6 +10,8 @@ import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
 import org.usfirst.frc.team5129.sys.*;
 
+import java.util.Arrays;
+
 import static org.usfirst.frc.team5129.meta.SAuto.*;
 
 /**
@@ -18,16 +20,14 @@ import static org.usfirst.frc.team5129.meta.SAuto.*;
  * @author kyleg
  */
 public class Robot extends TimedRobot {
-    private double period;
-    private double time;
+    private double period; // Time in between periodic() calls
+    private double time; // Total time
 
-    private PartMap pmap;
+    private PartMap pmap; // The Part Map for the robot
 
-    private Joystick st;
-    private XboxController ct;
-
-    private SSystem[] sys;
-    private SAuto auto;
+    private SSystem[] sys; // All the subsystems, stored in an array
+    private SAuto auto; // The Autonomous state.
+    private boolean loopAuto; // Loop the autonomous?
 
     private DashChoice choice;
     private PullAutonomous pull;
@@ -39,9 +39,10 @@ public class Robot extends TimedRobot {
         setPeriod(period);
 
         pmap = new PartMap();
+        System.out.printf("PartMap Keys: %s", pmap().keys());
 
-        st = new Joystick(pmap().port("joy"));
-        ct = new XboxController(pmap().port("xbox"));
+        Joystick st = new Joystick(pmap().port("joy"));
+        XboxController ct = new XboxController(pmap().port("xbox"));
 
         sys = new SSystem[]{
             new Camera(),
@@ -52,14 +53,17 @@ public class Robot extends TimedRobot {
             new Winch(this, ct)
         };
 
+        auto = null;
+        loopAuto = false;
+
         for (SSystem s : sys) {
             s.init();
         }
 
         choice = new DashChoice();
-        choice.addChoice("enable_auto", "Use Auto");
-        choice.addChoice("default_auto", "Default Auto");
-        choice.addChoice("disable_auto", "Disable Auto");
+        choice.addChoice("Use Auto", "enable_auto", false);
+        choice.addChoice("Default Auto", "default_auto", false);
+        choice.addChoice("Disable Auto", "disable_auto", true);
         choice.push();
     }
 
@@ -70,20 +74,30 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        if (choice.getSelected() == "Use Auto") { // Enable Auto
-            auto = pull.findPlate();
+        switch (choice.getSelected()) {
+            case "enable_auto":  // Enable Auto
+                auto = pull.findPlate();
 
-            System.out.printf(
-                "=== Autonomous ===\n"
-                    + "Pos: %d; Instruction: %s\n"
-                    + "Decided Auto: %d\n",
-                pull.getPlace(), pull.getPlate().toString(), auto);
-        } else if (choice.getSelected() == "Default Auto") {
-            auto = DEFAULT;
-            System.out.println("=== Autonomous has been set to default ===");
-        } else if (choice.getSelected() == "Disable Auto") {
-            auto = null;
-            System.out.println("=== Autonomous has been disabled ===");
+                System.out.printf(
+                        "=== Autonomous ===\n"
+                                + "Pos: %d; Instruction: %s\n"
+                                + "Decided Auto: %s\n",
+                        pull.getPlace(), Arrays.toString(pull.getPlate()), auto.toString());
+
+                loopAuto = true;
+                break;
+            case "default_auto":
+                auto = DEFAULT;
+                System.out.println("=== Autonomous has been set to default ===");
+
+                loopAuto = true;
+                break;
+            case "disable_auto":
+                auto = null;
+                System.out.println("=== Autonomous has been disabled ===");
+
+                loopAuto = false;
+                break;
         }
 
         pull = null; // Autonomous pull goes above this.
@@ -91,15 +105,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        for (SSystem s : sys) {
-            if (!s.getName().equalsIgnoreCase("camera"))
-                s.auto(getAuto());
+        if (loopAuto) {
+            for (SSystem s : sys) {
+                if (!s.getName().equalsIgnoreCase("camera"))
+                    s.auto(getAuto());
+            }
         }
     }
 
     @Override
     public void teleopInit() {
-
+        sys[5].execute(0x3);
     }
 
     @Override
@@ -118,6 +134,7 @@ public class Robot extends TimedRobot {
                 s.disable();
         }
 
+        auto = null;
         pull = new PullAutonomous(this);
     }
 
@@ -154,7 +171,6 @@ class DashChoice {
 
     DashChoice() {
         m_chooser = new SendableChooser<>();
-        m_chooser.setName("Choices");
     }
 
     /**
@@ -162,9 +178,13 @@ class DashChoice {
      *
      * @param name   The name of the new choice
      * @param action The possible action, or a display object (can be a String)
+     * @param def Is it a default choice?
      */
-    public void addChoice(String name, String action) {
-        m_chooser.addObject(name, action);
+    public void addChoice(String name, String action, boolean def) {
+        if (!def)
+            m_chooser.addObject(name, action);
+        else
+            m_chooser.addDefault(name, action);
     }
 
     /**
@@ -178,7 +198,7 @@ class DashChoice {
      * Push changes to the dashboard.
      */
     public void push() {
-        SmartDashboard.putData(m_chooser.getName(), m_chooser);
+        SmartDashboard.putData("Sendable", m_chooser);
     }
 
 }
@@ -209,7 +229,8 @@ class PullAutonomous {
      */
     public void pullWhileStarting() {
         String pull = "";
-        while (bot.isDisabled() && ds.isFMSAttached()) {
+        // TODO Add FMS check before competition (ds.isFMSAttached())
+        while (bot.isDisabled()) {
             if (ds.getGameSpecificMessage() != null) {
                 place = ds.getLocation();
                 pull = ds.getGameSpecificMessage();
@@ -228,7 +249,6 @@ class PullAutonomous {
         SAuto auto = POS1_LEFT; // Defaults to Pos 1, Left
         char side = getPlate()[0];
         switch (place) { // Decides the autonomous to run based on place.
-            // TODO Fix autonomous
             case 1:
                 if (side == 'L')
                     auto = POS1_LEFT; // Pos 1 Left

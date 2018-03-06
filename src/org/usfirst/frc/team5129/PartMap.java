@@ -11,7 +11,7 @@ public class PartMap {
 
     private final HashMap<String, Integer> ports;
 
-    public PartMap() {
+    PartMap() {
         this.ports = new HashMap<>();
 
         ports.put("drive_fl", 2);

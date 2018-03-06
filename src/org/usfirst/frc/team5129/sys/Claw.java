@@ -10,9 +10,11 @@ import org.usfirst.frc.team5129.meta.SSystem;
 public class Claw extends Component implements SSystem {
     private Spark claw;
 
-    boolean isTaken;
-    boolean m_isTaken;
-    double time;
+    private static boolean isTaken = false;
+    private static boolean m_isTaken = false;
+    private static boolean swap = false; // Which way can it go?
+
+    private double time;
 
     public Claw(Robot bot, XboxController ct) {
         super(bot, ct);
@@ -28,36 +30,47 @@ public class Claw extends Component implements SSystem {
         switch (i) {
             case 0x0:
                 if (getCTRL().getXButton()) {
-                    if (!isTaken) {
-                        time = System.currentTimeMillis();
-                        isTaken = true;
-                        claw.set(0.8);
-                    } else {
-                        new Thread(() -> {
-                            while (isTaken) {
-                                if (System.currentTimeMillis() - time >= 100) {
-                                    disable();
-                                    isTaken = false;
+                    if (!swap) { // Is the claw open?
+                        if (!isTaken) { // Any threads running?
+
+                            time = System.currentTimeMillis();
+                            isTaken = true;
+                            claw.set(0.8);
+                        } else {
+                            // Start ticking thread
+                            new Thread(() -> {
+                                while (isTaken) {
+                                    if (System.currentTimeMillis() - time >= 100) {
+                                        disable();
+                                        isTaken = false;
+                                        
+                                        swap = true;
+                                    }
                                 }
-                                System.out.println("threading");
-                            }
-                            System.out.println("exiting thread.");
-                        }).start();
+                                System.out.println("exiting thread.");
+                            }).start();
+                        }
                     }
                 } else if (getCTRL().getYButton()) {
-                    if (!m_isTaken) {
-                        time = System.currentTimeMillis();
-                        m_isTaken = true;
-                        claw.set(-0.8);
-                        new Thread(() -> {
-                            while (m_isTaken) {
-                                if (System.currentTimeMillis() - time >= 100) {
-                                    disable();
-                                    m_isTaken = false;
+                    if (swap) { // Is the claw closed?
+                        if (!m_isTaken) { // Any threads running?
+
+                            time = System.currentTimeMillis();
+                            m_isTaken = true;
+                            claw.set(-0.8);
+                        } else {
+                            new Thread(() -> {
+                                while (m_isTaken) {
+                                    if (System.currentTimeMillis() - time >= 100) {
+                                        disable();
+                                        m_isTaken = false;
+
+                                        swap = false;
+                                    }
+                                    System.out.println("threading");
                                 }
-                                System.out.println("threading");
-                            }
-                        }).start();
+                            }).start();
+                        }
                     }
                 } else if (getCTRL().getBackButton()) {
                     disable();
