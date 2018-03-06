@@ -6,7 +6,6 @@ import self.flashdaggerx.meta.SSystem;
 import self.flashdaggerx.sys.Drive;
 
 public class Robot extends RobotBase {
-
     private int time;
 
     private SSystem[] subs;
