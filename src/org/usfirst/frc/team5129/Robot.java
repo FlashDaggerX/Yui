@@ -10,7 +10,10 @@ import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
 import org.usfirst.frc.team5129.sys.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.usfirst.frc.team5129.meta.SAuto.*;
 
@@ -27,14 +30,13 @@ public class Robot extends TimedRobot {
 
     private SSystem[] sys; // All the subsystems, stored in an array
     private SAuto auto; // The Autonomous state.
-    private boolean loopAuto; // Loop the autonomous?
 
     private DashChoice choice;
     private PullAutonomous pull;
 
     @Override
     public void robotInit() {
-        period = 0.05;
+        period = 0.10;
         time = 0;
         setPeriod(period);
 
@@ -54,16 +56,13 @@ public class Robot extends TimedRobot {
         };
 
         auto = null;
-        loopAuto = false;
 
         for (SSystem s : sys) {
             s.init();
         }
 
-        choice = new DashChoice();
-        choice.addChoice("Use Auto", "enable_auto", false);
-        choice.addChoice("Default Auto", "default_auto", false);
-        choice.addChoice("Disable Auto", "disable_auto", true);
+        choice = new DashChoice("Auto");
+        choice.addChoices(new String[] {"disable_auto", "default_auto", "enable_auto"});
         choice.push();
     }
 
@@ -74,8 +73,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        boolean loopAuto = false; // Start the autonomous?
         switch (choice.getSelected()) {
-            case "enable_auto":  // Enable Auto
+            case "enable_auto":
                 auto = pull.findPlate();
 
                 System.out.printf(
@@ -101,21 +101,18 @@ public class Robot extends TimedRobot {
         }
 
         pull = null; // Autonomous pull goes above this.
-    }
 
-    @Override
-    public void autonomousPeriodic() {
+        time = 0;
+
         if (loopAuto) {
-            for (SSystem s : sys) {
-                if (!s.getName().equalsIgnoreCase("camera"))
-                    s.auto(getAuto());
-            }
+            Auto a = new Auto(this, auto);
+            a.getRoutine().start(); // Begin autonomous.
         }
     }
 
     @Override
     public void teleopInit() {
-        sys[5].execute(0x3);
+        subsystems()[5].execute(0x3);
     }
 
     @Override
@@ -147,12 +144,12 @@ public class Robot extends TimedRobot {
          */
     }
 
-    private SAuto getAuto() {
-        return auto;
-    }
-
     public double getTime() {
         return time;
+    }
+
+    public SSystem[] subsystems() {
+        return sys;
     }
 
     public PartMap pmap() {
@@ -167,38 +164,54 @@ public class Robot extends TimedRobot {
  */
 class DashChoice {
 
-    private SendableChooser<String> m_chooser;
-
-    DashChoice() {
-        m_chooser = new SendableChooser<>();
-    }
-
-    /**
-     * Add a choice to the current sendable.
-     *
-     * @param name   The name of the new choice
-     * @param action The possible action, or a display object (can be a String)
-     * @param def Is it a default choice?
+    /*
+    The reason behind using a HashMap instead of simplifying it was
+    because it made more sense for me, since a Sendable wasn't an option.
      */
-    public void addChoice(String name, String action, boolean def) {
-        if (!def)
-            m_chooser.addObject(name, action);
-        else
-            m_chooser.addDefault(name, action);
+    private HashMap<String, String[]> choices;
+    private String current; // The current section of the list;
+
+    DashChoice(String firstKey) {
+        choices = new HashMap<>();
+        current = firstKey;
     }
 
     /**
-     * @return The selected object for the current sendable.
+     * Adds a choice to the selected key.
+     * @param names The names of the choices. The first one is the default.
      */
-    public String getSelected() {
-        return m_chooser.getSelected();
+    public void addChoices(String[] names) {
+        if (!choices.containsKey(current)) {
+            choices.put(current, names);
+        } else {
+            DriverStation.reportError(
+                    "USR: Can't add choice key.",
+                    false);
+        }
     }
 
     /**
-     * Push changes to the dashboard.
+     * Changes the key.
+     * @param key The name of the key. If you have already pushed
+     *            this key to the dash, you can only read it.
+     */
+    public void swap(String key) {
+        this.current = key;
+    }
+
+    /**
+     * Pushes the current key to the dash.
      */
     public void push() {
-        SmartDashboard.putData("Sendable", m_chooser);
+        SmartDashboard.putStringArray(current, choices.get(current));
+    }
+
+    /**
+     * Gets the selected object from the key.
+     * @return The object selected, or the first if it could not find one.
+     */
+    public String getSelected() {
+        return SmartDashboard.getString(current, choices.get(current)[0]);
     }
 
 }
@@ -246,7 +259,7 @@ class PullAutonomous {
      * @return The suggested routine
      */
     public SAuto findPlate() {
-        SAuto auto = POS1_LEFT; // Defaults to Pos 1, Left
+        SAuto auto = DEFAULT;
         char side = getPlate()[0];
         switch (place) { // Decides the autonomous to run based on place.
             case 1:

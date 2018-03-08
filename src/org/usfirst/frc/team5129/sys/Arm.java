@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
 import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Component;
-import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
 
 public class Arm extends Component implements SSystem {
@@ -37,30 +36,6 @@ public class Arm extends Component implements SSystem {
                 break;
             case 0x2: // Down
                 arm.set(0.6);
-                break;
-        }
-    }
-
-    @Override
-    public void auto(SAuto i) {
-        double time = robot().getTime();
-        switch(i) {
-            case POS1_LEFT:
-                if (time == 8.3)
-                    execute(0x1);
-                else if (time == 9.6)
-                    disable();
-                break;
-            case POS1_RIGHT:
-                if (time == 0) // Fix please
-                break;
-            case POS2_LEFT:
-                break;
-            case POS2_RIGHT:
-                break;
-            case POS3_LEFT:
-                break;
-            case POS3_RIGHT:
                 break;
         }
     }

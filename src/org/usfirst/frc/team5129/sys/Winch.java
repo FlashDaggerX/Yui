@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
 import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Component;
-import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
 
 public class Winch extends Component implements SSystem {
@@ -63,24 +62,6 @@ public class Winch extends Component implements SSystem {
                 break;
             case 0x4:
                 isDebug = false;
-                break;
-        }
-    }
-
-    @Override
-    public void auto(SAuto i) {
-        switch(i) {
-            case POS1_LEFT:
-                break;
-            case POS1_RIGHT:
-                break;
-            case POS2_LEFT:
-                break;
-            case POS2_RIGHT:
-                break;
-            case POS3_LEFT:
-                break;
-            case POS3_RIGHT:
                 break;
         }
     }

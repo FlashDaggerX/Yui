@@ -20,14 +20,6 @@ public interface SSystem {
     void execute(int i);
 
     /**
-     * Instead of {@link SSystem#execute(int)}, auto is called
-     * in the autonomous loop.
-     *
-     * @param i The auto routine
-     */
-    void auto(SAuto i);
-
-    /**
      * Called when the subsystem is disabled.
      */
     void disable();

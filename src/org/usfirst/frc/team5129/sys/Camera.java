@@ -8,7 +8,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
 
 public class Camera implements SSystem {
@@ -23,11 +22,11 @@ public class Camera implements SSystem {
             // This is a code example from WPI's Java examples.
             vision = new Thread(() -> {
                 UsbCamera camera = CameraServer.getInstance()
-                    .startAutomaticCapture();
+                        .startAutomaticCapture();
                 camera.setResolution(640, 480);
                 CvSink cvSink = CameraServer.getInstance().getVideo();
                 setOutputStream(CameraServer.getInstance().putVideo("vision_def",
-                    640, 480));
+                        640, 480));
                 Mat mat = new Mat();
                 while (!Thread.interrupted()) {
                     if (cvSink.grabFrame(mat) == 0) {
@@ -35,7 +34,7 @@ public class Camera implements SSystem {
                         continue;
                     }
                     Imgproc.rectangle(mat, new Point(100, 100),
-                        new Point(400, 400), new Scalar(255, 255, 255), 5);
+                            new Point(400, 400), new Scalar(255, 255, 255), 5);
                     getOutputStream().putFrame(mat);
                 }
             });
@@ -46,11 +45,6 @@ public class Camera implements SSystem {
 
     @Override
     public void execute(int i) {
-        // Placeholder
-    }
-
-    @Override
-    public void auto(SAuto i) {
         // Placeholder
     }
 
