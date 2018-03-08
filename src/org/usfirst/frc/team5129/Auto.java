@@ -215,6 +215,7 @@ public class Auto {
                 } else if (time >= 13.3 && time <= 14) {
                     arm.disable(); // STOP WHAT YOU'RE DOING!
                     claw.execute(0x2); // Let go of lunch.
+                    break;
                 }
             }
         });
@@ -227,14 +228,8 @@ public class Auto {
             while (time < 15) {
                 time = robot().getTime();
 
-                if (time < 0.20)
-                    drive.execute(0x3);
-                else if (time == 2)
-                    drive.execute(0x1);
-                else if (time == 2.5) {
-                    drive.execute(0x3);
-                    break;
-                }
+                // Eh, do it later
+                // TODO POS2_LEFT Autonomous please?
             }
         });
     }
@@ -264,9 +259,9 @@ public class Auto {
                 time = robot().getTime();
 
                 if (time >= 0.60 && time <= 4.9)
-                    drive.execute(0x3);
+                    drive.execute(0x3); // Forward, just to cross auto
                 else if (time >= 5) {
-                    drive.disable();
+                    drive.disable(); // Disable me
                     break;
                 }
             }
