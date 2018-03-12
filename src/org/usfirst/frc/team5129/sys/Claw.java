@@ -7,11 +7,10 @@ import org.usfirst.frc.team5129.meta.Component;
 import org.usfirst.frc.team5129.meta.SSystem;
 
 public class Claw extends Component implements SSystem {
-    private volatile Spark claw;
+    private Spark claw;
 
-    private static boolean isTaken = false;
-    private static boolean m_isTaken = false;
-    //private static boolean swap = false; // Which way can it go?
+    private static boolean isTaken = false; // Swap button for X
+    private static boolean m_isTaken = false; // Swap for Y
 
     public Claw(Robot bot, XboxController ct) {
         super(bot, ct);
@@ -26,18 +25,14 @@ public class Claw extends Component implements SSystem {
     public void execute(int i) {
         switch (i) {
             case 0x0:
-                if (claw.getSpeed() != 0) {
-                    disable();
-                }
                 if (getCTRL().getXButton()) {
                     if (!isTaken) {
                         isTaken = true;
-                        claw.set(0.8);
-                    } else {
                         new Thread(() -> {
                             long time = System.currentTimeMillis();
+                            claw.set(0.8);
                             while (isTaken) {
-                                if (System.currentTimeMillis() - time >= 100) {
+                                if (System.currentTimeMillis() - time >= 110) {
                                     disable();
                                     isTaken = false;
                                 }
@@ -47,12 +42,11 @@ public class Claw extends Component implements SSystem {
                 } else if (getCTRL().getYButton()) {
                     if (!m_isTaken) {
                         m_isTaken = true;
-                        claw.set(-0.8);
-                    } else {
                         new Thread(() -> {
+                            long time = System.currentTimeMillis();
+                            claw.set(-0.8);
                             while (m_isTaken) {
-                                long time = System.currentTimeMillis();
-                                if (System.currentTimeMillis() - time >= 100) {
+                                if (System.currentTimeMillis() - time >= 115) {
                                     disable();
                                     m_isTaken = false;
                                 }
@@ -95,59 +89,8 @@ public class Claw extends Component implements SSystem {
         }
     }
 
-    /*
-    if (claw.getSpeed() != 0) {
-                    disable();
-                }
-                if (getCTRL().getXButton()) {
-                    if (!swap) { // Is the claw open?
-                        if (!isTaken) { // Any threads running?
-
-                            time = System.currentTimeMillis();
-                            isTaken = true;
-                            claw.set(0.8);
-                        } else {
-                            // Start ticking thread
-                            new Thread(() -> {
-                                while (isTaken) {
-                                    if (System.currentTimeMillis() - time >= 100) {
-                                        disable();
-                                        isTaken = false;
-
-                                        swap = true;
-                                    }
-                                }
-                            }).start();
-                        }
-                    }
-                } else if (getCTRL().getYButton()) {
-                    if (swap) { // Is the claw closed?
-                        if (!m_isTaken) { // Any threads running?
-
-                            time = System.currentTimeMillis();
-                            m_isTaken = true;
-                            claw.set(-0.8);
-                        } else {
-                            new Thread(() -> {
-                                // Start ticking thread
-                                while (m_isTaken) {
-                                    if (System.currentTimeMillis() - time >= 100) {
-                                        disable();
-                                        m_isTaken = false;
-
-                                        swap = false;
-                                    }
-                                }
-                            }).start();
-                        }
-                    }
-                } else if (getCTRL().getBackButton()) {
-                    disable();
-                }
-     */
-
     @Override
-    public void disable() {
+    public synchronized void disable() {
         claw.stopMotor();
     }
 

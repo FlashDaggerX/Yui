@@ -26,7 +26,7 @@ public class Arm extends Component implements SSystem {
                 if (getCTRL().getAButton()) {
                     arm.set(-1);
                 } else if (getCTRL().getBButton()) {
-                    arm.set(0.6);
+                    arm.set(0.4);
                 } else if (getCTRL().getBackButton()) {
                     disable();
                 }
@@ -35,7 +35,7 @@ public class Arm extends Component implements SSystem {
                 arm.set(-1);
                 break;
             case 0x2: // Down
-                arm.set(0.6);
+                arm.set(0.4);
                 break;
         }
     }

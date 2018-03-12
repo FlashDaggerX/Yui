@@ -10,10 +10,7 @@ import org.usfirst.frc.team5129.meta.SAuto;
 import org.usfirst.frc.team5129.meta.SSystem;
 import org.usfirst.frc.team5129.sys.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 import static org.usfirst.frc.team5129.meta.SAuto.*;
 
@@ -31,12 +28,12 @@ public class Robot extends TimedRobot {
     private SSystem[] sys; // All the subsystems, stored in an array
     private SAuto auto; // The Autonomous state.
 
-    private DashChoice choice;
+    private String choice;
     private PullAutonomous pull;
 
     @Override
     public void robotInit() {
-        period = 0.10;
+        period = 0.05;
         time = 0;
         setPeriod(period);
 
@@ -61,9 +58,7 @@ public class Robot extends TimedRobot {
             s.init();
         }
 
-        choice = new DashChoice("Auto");
-        choice.addChoices(new String[] {"disable_auto", "default_auto", "enable_auto"});
-        choice.push();
+        SmartDashboard.putString("auto_", "enable_auto");
     }
 
     @Override
@@ -74,9 +69,20 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         boolean loopAuto = false; // Start the autonomous?
-        switch (choice.getSelected()) {
+        switch (choice) {
             case "enable_auto":
-                auto = pull.findPlate();
+                auto = pull.findPlate(0);
+
+                System.out.printf(
+                        "=== Autonomous ===\n"
+                                + "Pos: %d; Instruction: %s\n"
+                                + "Decided Auto: %s\n",
+                        pull.getPlace(), Arrays.toString(pull.getPlate()), auto.toString());
+
+                loopAuto = true;
+                break;
+            case "pos1_pull":
+                auto = pull.findPlate(1);
 
                 System.out.printf(
                         "=== Autonomous ===\n"
@@ -97,6 +103,9 @@ public class Robot extends TimedRobot {
                 System.out.println("=== Autonomous has been disabled ===");
 
                 loopAuto = false;
+                break;
+            default:
+                System.out.println("Could not pull Autonomous.");
                 break;
         }
 
@@ -138,6 +147,9 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         pull.pullWhileStarting();
+
+        choice = SmartDashboard.getString("auto_", "disable_auto");
+        //choice = SmartDashboard.getString("Auto", "disable_auto");
         /*
          * When the plate assignment is pulled, find the
          * autonomous routine to use.
@@ -155,65 +167,6 @@ public class Robot extends TimedRobot {
     public PartMap pmap() {
         return pmap;
     }
-}
-
-/**
- * A simplified version of the Dashboard Chooser.
- *
- * @author kyleg
- */
-class DashChoice {
-
-    /*
-    The reason behind using a HashMap instead of simplifying it was
-    because it made more sense for me, since a Sendable wasn't an option.
-     */
-    private HashMap<String, String[]> choices;
-    private String current; // The current section of the list;
-
-    DashChoice(String firstKey) {
-        choices = new HashMap<>();
-        current = firstKey;
-    }
-
-    /**
-     * Adds a choice to the selected key.
-     * @param names The names of the choices. The first one is the default.
-     */
-    public void addChoices(String[] names) {
-        if (!choices.containsKey(current)) {
-            choices.put(current, names);
-        } else {
-            DriverStation.reportError(
-                    "USR: Can't add choice key.",
-                    false);
-        }
-    }
-
-    /**
-     * Changes the key.
-     * @param key The name of the key. If you have already pushed
-     *            this key to the dash, you can only read it.
-     */
-    public void swap(String key) {
-        this.current = key;
-    }
-
-    /**
-     * Pushes the current key to the dash.
-     */
-    public void push() {
-        SmartDashboard.putStringArray(current, choices.get(current));
-    }
-
-    /**
-     * Gets the selected object from the key.
-     * @return The object selected, or the first if it could not find one.
-     */
-    public String getSelected() {
-        return SmartDashboard.getString(current, choices.get(current)[0]);
-    }
-
 }
 
 /**
@@ -246,6 +199,7 @@ class PullAutonomous {
         while (bot.isDisabled()) {
             if (ds.getGameSpecificMessage() != null) {
                 place = ds.getLocation();
+                System.out.println("Pulling Auto....");
                 pull = ds.getGameSpecificMessage();
                 break;
             }
@@ -256,30 +210,38 @@ class PullAutonomous {
     /**
      * Decides the autonomous from the message pulled with {@link PullAutonomous#pullWhileStarting()}
      *
+     * @param p Optional place, 0 for pull all
      * @return The suggested routine
      */
-    public SAuto findPlate() {
+    public SAuto findPlate(int p) {
         SAuto auto = DEFAULT;
         char side = getPlate()[0];
-        switch (place) { // Decides the autonomous to run based on place.
-            case 1:
-                if (side == 'L')
-                    auto = POS1_LEFT; // Pos 1 Left
-                else
-                    auto = POS1_RIGHT;
-                break;
-            case 2:
-                if (side == 'L')
-                    auto = POS2_LEFT;
-                else
-                    auto = POS2_RIGHT;
-                break;
-            case 3:
-                if (side == 'L')
-                    auto = POS3_LEFT;
-                else
-                    auto = POS3_RIGHT;
-                break;
+        if (p == 0) {
+            switch (place) { // Decides the autonomous to run based on place.
+                case 1:
+                    if (side == 'L')
+                        auto = POS1_LEFT; // Pos 1 Left
+                    else
+                        auto = POS1_RIGHT;
+                    break;
+                case 2:
+                    if (side == 'L')
+                        auto = POS2_LEFT;
+                    else
+                        auto = POS2_RIGHT;
+                    break;
+                case 3:
+                    if (side == 'L')
+                        auto = POS3_LEFT;
+                    else
+                        auto = POS3_RIGHT;
+                    break;
+            }
+        } else if (p == 1) {
+            if (side == 'L')
+                auto = POS1_LEFT; // Pos 1 Left
+            else
+                auto = POS1_RIGHT;
         }
         return auto;
     }

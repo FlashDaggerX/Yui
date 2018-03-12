@@ -165,20 +165,17 @@ public class Auto {
             while (time < 15) {
                 time = robot().getTime();
 
-                if (time >= 0.20 && time <= 0.60)
-                    claw.execute(0x1); // Grip the claw with the cube in it.
-                else if (time >= 0.60 && time <= 4.9)
+                if (time >= 0.40 && time <= 4.6)
                     drive.execute(0x3); // Drive forward bois
-                else if (time >= 5 && time <= 5.2)
+                else if (time >= 5 && time <= 5.5)
                     drive.execute(0x2); // Turn right, duh
-                else if (time >= 6 && time <= 6.6)
-                    drive.execute(0x3); // Just a tad forward
-                else if (time >= 6.6 && time <= 7.2) {
+                else if (time >= 5.6 && time <= 6.4) {
                     drive.disable();
                     arm.execute(0x2); // Lower dat arm
-                } else if (time >= 9.6) {
+                } else if (time >= 9.6)
                     arm.disable(); // Stop arm
-                    claw.execute(0x2); // Let go of powercubeoid
+                else if (time >= 9.70 && time <= 9.75) {
+                    claw.execute(0x2);
                     break;
                 }
             }
@@ -193,28 +190,22 @@ public class Auto {
             while (time < 15) {
                 time = robot().getTime();
 
-                if (time >= 0.20 && time <= 0.60)
-                    claw.execute(0x1); // Grip lunch
-                else if (time >= 0.80 && time <= 5.5)
-                    drive.execute(0x3); // Forward for a bit
-                else if (time >= 5.6 && time <= 5.8)
-                    drive.execute(0x2); // R I G HT
-                else if (time >= 5.9 && time <= 7.5)
-                    drive.execute(0x3); // Forward a bit more
-                else if (time >= 7.6 && time <= 7.8)
-                    drive.execute(0x1); // LE F T
-                else if (time >= 7.9 && time <= 10.4)
-                    drive.execute(0x3); // Forward even moreeee
-                else if (time >= 10.5 && time <= 10.7)
-                    drive.execute(0x1); // LE F T AG AIN
-                else if (time >= 10.8 && time <= 11.6)
-                    drive.execute(0x3); // FORWARD AGAIN!
-                else if (time >= 11.7 && time <= 13.2) {
-                    drive.disable(); // Stop boi
-                    arm.execute(0x2); // LOWER ME
-                } else if (time >= 13.3 && time <= 14) {
-                    arm.disable(); // STOP WHAT YOU'RE DOING!
-                    claw.execute(0x2); // Let go of lunch.
+                if (time >= 0.20 && time <= 1.3)
+                    drive.execute(0x3);
+                else if (time >= 1.4 && time <= 1.9)
+                    drive.execute(0x2);
+                else if (time >= 2 && time <= 4.1)
+                    drive.execute(0x3);
+                else if (time >= 4.2 && time <= 4.7)
+                    drive.execute(0x1);
+                else if (time >= 4.8 && time <= 5.6)
+                    drive.execute(0x3);
+                else if (time >= 5.7 && time <= 6.4) {
+                    drive.disable();
+                    arm.execute(0x2);
+                } else if (time >= 6.4 && time <= 6.5) {
+                    arm.disable();
+                    claw.execute(0x2);
                     break;
                 }
             }

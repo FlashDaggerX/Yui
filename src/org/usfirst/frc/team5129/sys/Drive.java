@@ -39,26 +39,34 @@ public class Drive extends Handled implements SSystem {
     public void execute(int i) {
         switch (i) {
             case 0x0: // Default
+                /*
                 double deadzone;
                 if (getCTRL().getTrigger())
-                    deadzone = 0.4;
+                    deadzone = 0.5;
                 else
-                    deadzone = 0.2;
-                double x = createDeadZone(getCTRL().getX(), deadzone);
-                double y = createDeadZone(getCTRL().getY(), deadzone);
+                    deadzone = 0.3;
+                */
+                double x = getCTRL().getX() * 0.8;
+                double y = getCTRL().getY() * 0.8;
                 drive.arcadeDrive(x, y, true);
                 break;
+            /*
+                Forward is [+] on right motor, [-] on left motor
+                Back is [-][+]
+                Left is [-][-]
+                Right is[+][+]
+            */
             case 0x1: // Left
-                drive.arcadeDrive(0, -1);
+                drive.tankDrive(-0.5, -0.5);
                 break;
             case 0x2: // Right
-                drive.arcadeDrive(0, 1);
+                drive.tankDrive(0.5, 0.5);
                 break;
             case 0x3: // Forward
-                drive.arcadeDrive(0.6, 0);
+                drive.tankDrive(-0.6, 0.6);
                 break;
             case 0x4: // Back
-                drive.arcadeDrive(-0.6, 0);
+                drive.tankDrive(0.6, -0.6);
                 break;
         }
     }
