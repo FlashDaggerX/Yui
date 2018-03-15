@@ -5,12 +5,7 @@ package org.usfirst.frc.team5129.meta;
  *
  * @author kyleg
  */
-public interface SSystem {
-
-    /**
-     * Called when the subsystem is turned on.
-     */
-    void init();
+public interface SubSystem {
 
     /**
      * Endlessly called in periodic() methods.

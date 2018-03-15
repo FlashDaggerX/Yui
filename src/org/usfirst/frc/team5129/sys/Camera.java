@@ -8,16 +8,15 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5129.meta.SSystem;
+import org.usfirst.frc.team5129.meta.SubSystem;
 
-public class Camera implements SSystem {
+public class Camera implements SubSystem {
 
     private Thread vision;
 
     private volatile CvSource outputStream;
 
-    @Override
-    public void init() {
+    public Camera() {
         if (vision == null) {
             // This is a code example from WPI's Java examples.
             vision = new Thread(() -> {

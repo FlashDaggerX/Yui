@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
 import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Component;
-import org.usfirst.frc.team5129.meta.SSystem;
+import org.usfirst.frc.team5129.meta.SubSystem;
 
-public class Claw extends Component implements SSystem {
+public class Claw extends Component implements SubSystem {
     private Spark claw;
 
     private static boolean isTaken = false; // Swap button for X
@@ -14,10 +14,7 @@ public class Claw extends Component implements SSystem {
 
     public Claw(Robot bot, XboxController ct) {
         super(bot, ct);
-    }
 
-    @Override
-    public void init() {
         claw = new Spark(robot().pmap().port("claw"));
     }
 

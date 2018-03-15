@@ -5,20 +5,17 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
 import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Component;
-import org.usfirst.frc.team5129.meta.SSystem;
+import org.usfirst.frc.team5129.meta.SubSystem;
 
-public class Winch extends Component implements SSystem {
+public class Winch extends Component implements SubSystem {
     private Spark winch;
 
     private boolean isDebug;
 
     public Winch(Robot bot, XboxController ct) {
         super(bot, ct);
-        isDebug = false;
-    }
 
-    @Override
-    public void init() {
+        isDebug = false;
         winch = new Spark(robot().pmap().port("winch"));
     }
 

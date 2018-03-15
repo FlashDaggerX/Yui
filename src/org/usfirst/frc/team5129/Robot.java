@@ -4,15 +4,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team5129.meta.SAuto;
-import org.usfirst.frc.team5129.meta.SSystem;
+import org.usfirst.frc.team5129.meta.AutoSig;
+import org.usfirst.frc.team5129.meta.SubSystem;
 import org.usfirst.frc.team5129.sys.*;
 
 import java.util.Arrays;
 
-import static org.usfirst.frc.team5129.meta.SAuto.*;
+import static org.usfirst.frc.team5129.meta.AutoSig.*;
 
 /**
  * Main Robot class.
@@ -25,8 +24,8 @@ public class Robot extends TimedRobot {
 
     private PartMap pmap; // The Part Map for the robot
 
-    private SSystem[] sys; // All the subsystems, stored in an array
-    private SAuto auto; // The Autonomous state.
+    private SubSystem[] sys; // All the subsystems, stored in an array
+    private AutoSig auto; // The Autonomous state.
 
     private String choice;
     private PullAutonomous pull;
@@ -43,7 +42,7 @@ public class Robot extends TimedRobot {
         Joystick st = new Joystick(pmap().port("joy"));
         XboxController ct = new XboxController(pmap().port("xbox"));
 
-        sys = new SSystem[]{
+        sys = new SubSystem[]{
             new Camera(),
             new Drive(this, st),
             new Claw(this, ct),
@@ -54,10 +53,7 @@ public class Robot extends TimedRobot {
 
         auto = null;
 
-        for (SSystem s : sys) {
-            s.init();
-        }
-
+        // Push a text-box to the dash, allowing for auto choices.
         SmartDashboard.putString("auto_", "enable_auto");
     }
 
@@ -88,7 +84,29 @@ public class Robot extends TimedRobot {
                         "=== Autonomous ===\n"
                                 + "Pos: %d; Instruction: %s\n"
                                 + "Decided Auto: %s\n",
-                        pull.getPlace(), Arrays.toString(pull.getPlate()), auto.toString());
+                        1, Arrays.toString(pull.getPlate()), auto.toString());
+
+                loopAuto = true;
+                break;
+            case "pos2_pull":
+                auto = pull.findPlate(2);
+
+                System.out.printf(
+                        "=== Autonomous ===\n"
+                                + "Pos: %d; Instruction: %s\n"
+                                + "Decided Auto: %s\n",
+                        2, Arrays.toString(pull.getPlate()), auto.toString());
+
+                loopAuto = true;
+                break;
+            case "pos3_pull":
+                auto = pull.findPlate(3);
+
+                System.out.printf(
+                        "=== Autonomous ===\n"
+                                + "Pos: %d; Instruction: %s\n"
+                                + "Decided Auto: %s\n",
+                        3, Arrays.toString(pull.getPlate()), auto.toString());
 
                 loopAuto = true;
                 break;
@@ -121,21 +139,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        subsystems()[5].execute(0x3);
+        subsystems()[5].execute(0x3); // Flips the Winch debug state on.
     }
 
     @Override
     public void teleopPeriodic() {
-        for (SSystem s : sys) {
-            if (!s.getName().equalsIgnoreCase("camera"))
-                s.execute(0x0);
-
+        for (SubSystem s : sys) {
+            s.execute(0x0);
         }
     }
 
     @Override
     public void disabledInit() {
-        for (SSystem s : sys) {
+        for (SubSystem s : sys) {
             if (!s.getName().equalsIgnoreCase("camera"))
                 s.disable();
         }
@@ -149,7 +165,6 @@ public class Robot extends TimedRobot {
         pull.pullWhileStarting();
 
         choice = SmartDashboard.getString("auto_", "disable_auto");
-        //choice = SmartDashboard.getString("Auto", "disable_auto");
         /*
          * When the plate assignment is pulled, find the
          * autonomous routine to use.
@@ -160,7 +175,7 @@ public class Robot extends TimedRobot {
         return time;
     }
 
-    public SSystem[] subsystems() {
+    public SubSystem[] subsystems() {
         return sys;
     }
 
@@ -175,15 +190,16 @@ public class Robot extends TimedRobot {
  * <p>
  *
  * @author kyleg
- * @see <a href="https://wpilib.screenstepslive.com/s/currentCS/m/getting_started/l/826278-2018-game-data-details">2018 Game Data</a>
+ * @see <a href="
+ *      https://wpilib.screenstepslive.com/s/currentCS/m/getting_started/l/826278-2018-game-data-details
+ *          ">2018 Game Data
+ *              </a>
  */
 class PullAutonomous {
     private final Robot bot;
 
     private int place;
     private char[] auto;
-
-    private final DriverStation ds = DriverStation.getInstance();
 
     PullAutonomous(Robot bot) {
         this.bot = bot;
@@ -195,7 +211,8 @@ class PullAutonomous {
      */
     public void pullWhileStarting() {
         String pull = "";
-        // TODO Add FMS check before competition (ds.isFMSAttached())
+
+        final DriverStation ds = DriverStation.getInstance();
         while (bot.isDisabled()) {
             if (ds.getGameSpecificMessage() != null) {
                 place = ds.getLocation();
@@ -213,8 +230,8 @@ class PullAutonomous {
      * @param p Optional place, 0 for pull all
      * @return The suggested routine
      */
-    public SAuto findPlate(int p) {
-        SAuto auto = DEFAULT;
+    public AutoSig findPlate(int p) {
+        AutoSig auto = DEFAULT;
         char side = getPlate()[0];
         if (p == 0) {
             switch (place) { // Decides the autonomous to run based on place.
@@ -242,6 +259,16 @@ class PullAutonomous {
                 auto = POS1_LEFT; // Pos 1 Left
             else
                 auto = POS1_RIGHT;
+        } else if (p == 2) {
+            if (side == 'L')
+                auto = POS2_LEFT; // Pos 2 Left
+            else
+                auto = POS2_RIGHT;
+        } else if (p == 3) {
+            if (side == 'L')
+                auto = POS3_LEFT; // Pos 3 Left
+            else
+                auto = POS3_RIGHT;
         }
         return auto;
     }

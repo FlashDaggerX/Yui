@@ -1,7 +1,7 @@
 package org.usfirst.frc.team5129;
 
-import org.usfirst.frc.team5129.meta.SAuto;
-import org.usfirst.frc.team5129.meta.SSystem;
+import org.usfirst.frc.team5129.meta.AutoSig;
+import org.usfirst.frc.team5129.meta.SubSystem;
 
 public class Auto {
     private volatile Robot bot;
@@ -9,156 +9,44 @@ public class Auto {
 
     private Thread routine;
 
-    Auto(Robot bot, SAuto auto) {
+    Auto(Robot bot, AutoSig auto) {
         this.bot = bot;
 
         switch(auto) {
             case POS1_LEFT:
                 routine = POS1_LEFT();
-                 /* Each [*] is a foot
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * / - - [*] - O - [ ] * * * * * * * Assumed position of the switch
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * * Auto Line
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * | * * * * * | * * * * Alliance wall
-                      POS1        POS2        POS3
-                 */
+
                 break;
             case POS1_RIGHT:
                 routine = POS1_RIGHT();
-                 /* Each [*] is a foot
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * * * * [ ] - O - [*] - \ * * * * * Assumed position of the switch
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * * * * * * * * * * * * | * * * * * Auto Line
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * * * * * * * * * * * * | * * * * *
-                * * * * / - - - - - - - - - - / * * * * * (Assumed that POS2 has crossed Auto)
-                * * * * | * * * * * * * * * * * * * * * *
-                * * * * | * * * * * | * * * * * | * * * * Alliance wall
-                      POS1        POS2        POS3
-                 */
+
                 break;
             case POS2_LEFT:
                 routine = POS2_LEFT();
-                 /* Each [*] is a foot
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * * * * [*] - O - [ ] * * * * * * * Assumed position of the switch
-                * * * * * * * | * * * * * * * * * * * * *
-                * * * * * * * \ - - \ * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * * Auto Line
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * | * * * * * | * * * * * | * * * * Alliance wall
-                      POS1        POS2        POS3
-                 */
-                break;
-            case POS2_RIGHT: /* Each [*] is a foot
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * * * * [ ] - O - [*] * * * * * * * Assumed position of the switch
-                * * * * * * * * * * * * * | * * * * * * *
-                * * * * * * * * * * / - - / * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * * Auto Line
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * * * * * * * | * * * * * * * * * *
-                * * * * | * * * * * | * * * * * | * * * * Alliance wall
-                      POS1        POS2        POS3
-                 */
 
+                break;
+            case POS2_RIGHT:
                 routine = POS2_RIGHT();
+
                 break;
             case POS3_LEFT:
-                 /* Each [*] is a foot
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * * / - [*] - O - [ ] * * * * * * * Assumed position of the switch
-                * * * * * | * * * * * * * * * * * * * * *
-                * * * * * | * * * * * * * * * * * * * * *
-                * * * * * | * * * * * * * * * * * * * * * Auto Line
-                * * * * * | * * * * * * * * * * * * * * *
-                * * * * * | * * * * * * * * * * * * * * *
-                * * * * * | * * * * * * * * * * * * * * *
-                * * * * * | * * * * * * * * * * * * * * *
-                * * * * * | * * * * * * * * * * * * * * *
-                * * * * * \ - - - - - - - - - - \ * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * * Alliance wall
-                      POS1        POS2        POS3
-                 */
                 routine = POS3_LEFT();
+
                 break;
             case POS3_RIGHT:
-                 /* Each [*] is a foot
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * * * * [ ] - O - [ ] - - \ * * * * Assumed position of the switch
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * * Auto Line
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * * * * * * * * * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * * Alliance wall
-                      POS1        POS2        POS3
-                 */
                 routine = POS3_RIGHT();
+
                 break;
             case DEFAULT:
-                 /* Each [*] is a foot
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * * * * [ ] - O - [ ] * * * * * * * Assumed position of the switch
-                * * * * * * * * * * * * * * * * * * * * *
-                * * * * ! * * * * * ! * * * * * ! * * * *
-                * * * * | * * * * * | * * * * * | * * * * Auto Line
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * *
-                * * * * | * * * * * | * * * * * | * * * * Alliance wall
-                      POS1        POS2        POS3
-                 */
                 routine = DEFAULT();
+                
                 break;
         }
     }
 
     private Thread POS1_LEFT() {
         return new Thread(() -> {
-            SSystem drive = robot().subsystems()[1],
+            SubSystem drive = robot().subsystems()[1],
                     arm = robot().subsystems()[4],
                     claw = robot().subsystems()[2];
 
@@ -184,7 +72,7 @@ public class Auto {
 
     private Thread POS1_RIGHT() {
         return new Thread(() -> {
-            SSystem drive = robot().subsystems()[1],
+            SubSystem drive = robot().subsystems()[1],
                     arm = robot().subsystems()[4],
                     claw = robot().subsystems()[2];
             while (time < 15) {
@@ -214,7 +102,7 @@ public class Auto {
 
     private Thread POS2_LEFT() {
         return new Thread(() -> {
-            SSystem drive = robot().subsystems()[1];
+            SubSystem drive = robot().subsystems()[1];
 
             while (time < 15) {
                 time = robot().getTime();
@@ -244,7 +132,7 @@ public class Auto {
 
     private Thread DEFAULT() {
         return new Thread(() -> {
-            SSystem drive = robot().subsystems()[1];
+            SubSystem drive = robot().subsystems()[1];
 
             while (time < 15) {
                 time = robot().getTime();

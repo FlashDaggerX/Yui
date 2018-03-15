@@ -4,17 +4,14 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.XboxController;
 import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Component;
-import org.usfirst.frc.team5129.meta.SSystem;
+import org.usfirst.frc.team5129.meta.SubSystem;
 
-public class Arm extends Component implements SSystem {
+public class Arm extends Component implements SubSystem {
     private Spark arm;
 
     public Arm(Robot bot, XboxController ct) {
         super(bot, ct);
-    }
 
-    @Override
-    public void init() {
         arm = new Spark(robot().pmap().port("arm"));
     }
 

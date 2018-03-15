@@ -6,17 +6,14 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.usfirst.frc.team5129.Robot;
 import org.usfirst.frc.team5129.meta.Handled;
-import org.usfirst.frc.team5129.meta.SSystem;
+import org.usfirst.frc.team5129.meta.SubSystem;
 
-public class Drive extends Handled implements SSystem {
+public class Drive extends Handled implements SubSystem {
     private DifferentialDrive drive;
 
     public Drive(Robot bot, Joystick st) {
         super(bot, st);
-    }
 
-    @Override
-    public void init() {
         final PWMVictorSPX[] pwm = {
                 new PWMVictorSPX(robot().pmap().port("drive_fl")),
                 new PWMVictorSPX(robot().pmap().port("drive_rl")),
@@ -32,22 +29,14 @@ public class Drive extends Handled implements SSystem {
         grp[1].setInverted(true);
 
         drive = new DifferentialDrive(grp[0], grp[1]);
-
     }
 
     @Override
     public void execute(int i) {
         switch (i) {
             case 0x0: // Default
-                /*
-                double deadzone;
-                if (getCTRL().getTrigger())
-                    deadzone = 0.5;
-                else
-                    deadzone = 0.3;
-                */
-                double x = getCTRL().getX() * 0.8;
-                double y = getCTRL().getY() * 0.8;
+                double x = getCTRL().getX() * 0.7;
+                double y = getCTRL().getY() * 0.7;
                 drive.arcadeDrive(x, y, true);
                 break;
             /*
@@ -81,7 +70,8 @@ public class Drive extends Handled implements SSystem {
         return "drive";
     }
 
-    /**
+    /*
+    **
      * Creates a deadzone, but without clipping the lower values.
      * turns this
      * |--1--2--3--4--5--|
@@ -92,8 +82,11 @@ public class Drive extends Handled implements SSystem {
      * @param deadZoneSize The size of the deadzone.
      * @return adjusted_input
      * @author owatonnarobotics
-     * @see <a href=https://github.com/owatonnarobotics/XboxController/blob/master/XboxController.java>Custom Xbox Class</a>
-     */
+     * @see <a href=
+     *  https://github.com/owatonnarobotics/XboxController/blob/master/XboxController.java>
+     *      Custom Xbox Class
+     *          </a>
+     *
     private double createDeadZone(double input, double deadZoneSize) {
         final double negative;
         double deadZoneSizeClamp = deadZoneSize;
@@ -111,5 +104,5 @@ public class Drive extends Handled implements SSystem {
 
         return negative * adjusted;
     }
-
+    */
 }
