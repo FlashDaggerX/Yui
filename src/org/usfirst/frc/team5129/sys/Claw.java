@@ -7,93 +7,77 @@ import org.usfirst.frc.team5129.meta.Component;
 import org.usfirst.frc.team5129.meta.SubSystem;
 
 public class Claw extends Component implements SubSystem {
-    private Spark claw;
-
-    private static boolean isTaken = false; // Swap button for X
-    private static boolean m_isTaken = false; // Swap for Y
-
+    private Spark[] claw;
+    
     public Claw(Robot bot, XboxController ct) {
         super(bot, ct);
 
-        claw = new Spark(robot().pmap().port("claw"));
+        claw = new Spark[] {
+        		new Spark(robot().pmap().port("claw_1")),
+        		new Spark(robot().pmap().port("claw_2"))
+        };
     }
 
     @Override
     public void execute(int i) {
         switch (i) {
             case 0x0:
-                if (getCTRL().getXButton()) {
-                    if (!isTaken) {
-                        isTaken = true;
-                        new Thread(() -> {
-                            long time = System.currentTimeMillis();
-                            claw.set(0.8);
-                            while (isTaken) {
-                                if (System.currentTimeMillis() - time >= 110) {
-                                    disable();
-                                    isTaken = false;
-                                }
-                            }
-                        }).start();
-                    }
-                } else if (getCTRL().getYButton()) {
-                    if (!m_isTaken) {
-                        m_isTaken = true;
-                        new Thread(() -> {
-                            long time = System.currentTimeMillis();
-                            claw.set(-0.8);
-                            while (m_isTaken) {
-                                if (System.currentTimeMillis() - time >= 115) {
-                                    disable();
-                                    m_isTaken = false;
-                                }
-                            }
-                        }).start();
-                    }
-                } else if (getCTRL().getBackButton()) {
-                    disable();
-                }
+            	if (getCTRL().getXButton())
+            		inward();
+            	else if (getCTRL().getYButton())
+            		outward();
                 break;
             case 0x1: // Close
                 new Thread(() -> {
-                    claw.set(0.8);
-                    long time = System.currentTimeMillis();
-                    boolean done = false;
-                    while (!done) {
-                        if (System.currentTimeMillis() - time >= 100) {
-                            disable();
-                            done = true;
-                        }
+                    inward();
+                	long time = System.currentTimeMillis();
+                    
+                    while(true) {
+                    	if ((System.currentTimeMillis() - time) == 120) {
+                    		disable();
+                    		break;
+                    	}
                     }
                 }).start();
                 break;
             case 0x2: // Open
                 new Thread(() -> {
-                    claw.set(-0.8);
-                    long time = System.currentTimeMillis();
-                    boolean done = false;
-                    while (!done) {
-                        if (System.currentTimeMillis() - time >= 100) {
-                            disable();
-                            done = true;
-                        }
-                    }
+                	 outward();
+                 	long time = System.currentTimeMillis();
+                     
+                     while(true) {
+                     	if ((System.currentTimeMillis() - time) == 120) {
+                     		disable();
+                     		break;
+                     	}
+                     }
                 }).start();
                 break;
             case 0x3:
-                claw.stopMotor();
+                disable();
                 break;
         }
     }
 
     @Override
     public synchronized void disable() {
-        claw.stopMotor();
+        for (Spark s : claw) {
+        	s.stopMotor();
+        }
     }
 
     @Override
     public String getName() {
         return "claw";
     }
-
+    
+    private void inward() {
+    	claw[0].set(-0.8);
+    	claw[1].set(0.8);
+    }
+    
+    private void outward() {
+    	claw[0].set(0.8);
+    	claw[1].set(-0.8);
+    }
 }
